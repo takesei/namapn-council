@@ -1,0 +1,6 @@
+[[Top]]
+page = "modules/top/home.py"
+title = "ホーム"
+icon = ":material/home:"
+url_path = ""
+default = true
