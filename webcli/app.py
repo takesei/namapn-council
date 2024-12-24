@@ -1,5 +1,7 @@
 import streamlit as st
 import tomllib
+import duckdb
+import os
 
 # Page Config
 st.set_page_config(
@@ -27,6 +29,33 @@ def load_navigation():
 
 pages = load_navigation()
 
+
+# Create DB connection
+@st.cache_resource
+def duckdb_local_session():
+    print("Create DB Session")
+    con = duckdb.connect(database=":memory:")
+
+    return con
+
+
+def fetch_data():
+    return None
+
+
+if "db" not in st.session_state:
+    st.session_state.db = duckdb_local_session()
+
+if "data_fetched" not in st.session_state:
+    print("Fetch data")
+    os.makedirs("data", exist_ok=True)
+    msg = st.toast("データ更新中", icon=":material/sync:")
+    err = fetch_data()
+    if err is None:
+        msg.toast("データ更新完了, good luck!!", icon=":material/check:")
+        st.session_state.data_fetched = True
+    else:
+        msg.toast("データ更新失敗, try again later", icon=":material/block:")
 
 # Navigation
 try:

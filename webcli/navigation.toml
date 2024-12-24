@@ -4,3 +4,9 @@ title = "ホーム"
 icon = ":material/home:"
 url_path = ""
 default = true
+
+[[Top]]
+page = "modules/top/demo_proration.py"
+title = "DEMO - 按分"
+icon = ":material/function:"
+url_path = "demo-proration"
