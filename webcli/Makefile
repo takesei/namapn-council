@@ -5,3 +5,6 @@ lint:
 
 run-dev-server:
 	@uv run streamlit run app.py
+
+migration:
+	@uv run python ./TEMP/migration.py

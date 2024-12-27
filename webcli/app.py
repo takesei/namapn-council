@@ -32,9 +32,9 @@ pages = load_navigation()
 
 # Create DB connection
 @st.cache_resource
-def duckdb_local_session():
+def duckdb_local_session(db: str):
     print("Create DB Session")
-    con = duckdb.connect(database=":memory:")
+    con = duckdb.connect(database=db)
 
     return con
 
@@ -44,7 +44,7 @@ def fetch_data():
 
 
 if "db" not in st.session_state:
-    st.session_state.db = duckdb_local_session()
+    st.session_state.db = duckdb_local_session("./dwh.duckdb")
 
 if "data_fetched" not in st.session_state:
     print("Fetch data")
