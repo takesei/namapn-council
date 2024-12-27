@@ -1,0 +1,79 @@
+[[Top]]
+page = "modules/top/home.py"
+title = "ホーム"
+icon = ":material/home:"
+url_path = ""
+default = true
+
+[[Top]]
+page = "modules/top/demo_proration.py"
+title = "DEMO - 按分"
+icon = ":material/function:"
+url_path = "demo-proration"
+
+[[BI]]
+page = "modules/bi/dashboard.py"
+title = "ダッシュボード"
+icon = ":material/dashboard:"
+url_path = "dashboard"
+
+[[Dimension]]
+page = "modules/dimension/overview.py"
+title = "概要"
+icon = ":material/function:"
+url_path = "dimension-overview"
+
+[[Dimension]]
+page = "modules/dimension/product.py"
+title = "品目軸"
+icon = ":material/function:"
+url_path = "dimenstion-product"
+
+[[Dimension]]
+page = "modules/dimension/organization.py"
+title = "組織軸"
+icon = ":material/function:"
+url_path = "dimenstion-organization"
+
+[[Dimension]]
+page = "modules/dimension/customer.py"
+title = "顧客軸"
+icon = ":material/function:"
+url_path = "dimenstion-customer"
+
+[[Dimension]]
+page = "modules/dimension/calender.py"
+title = "時間軸"
+icon = ":material/function:"
+url_path = "dimenstion-calender"
+
+[[Dimension]]
+page = "modules/dimension/logistics.py"
+title = "ロジスティクス軸"
+icon = ":material/function:"
+url_path = "dimenstion-logistics"
+
+[[YearlyPlanning]]
+page = "modules/yearly_planning/bp.py"
+title = "年間計画"
+icon = ":material/edit:"
+url_path = "bp"
+
+[[SalesPlanning]]
+page = "modules/sales_planning/sales.py"
+title = "販売計画"
+icon = ":material/edit:"
+url_path = "sales-plan"
+
+
+[[SupplyPlanning]]
+page = "modules/supply_planning/supply.py"
+title = "供給計画"
+icon = ":material/edit:"
+url_path = "supply-plan"
+
+[[SupplyPlanning]]
+page = "modules/supply_planning/psi.py"
+title = "PSI計算"
+icon = ":material/function:"
+url_path = "psi"
