@@ -13,3 +13,9 @@ wheels/
 
 db/minio/data/
 webcli/.streamlit/secrets.toml
+*.duckdb
+storage/minio/data/*
+.op/*
+*.zip
+*.csv
+*.xlsx
