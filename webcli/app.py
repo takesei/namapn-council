@@ -5,8 +5,7 @@ import os
 
 # Page Config
 st.set_page_config(
-    page_title="Namaph Council Demo",
-    page_icon=":material/forest:",
+    page_title="Namaph Council Demo", page_icon=":material/forest:", layout="wide",
 )
 
 
@@ -60,6 +59,13 @@ if "data_fetched" not in st.session_state:
 # Navigation
 try:
     pg = st.navigation(pages)
+
+    with st.sidebar:
+        with st.container(border=True):
+            st.error("緊急対応", icon="⚠️")
+            "- 台風上陸による調達計画への影響あり"
+            "- SNS反響に起因する需要の急激な変化あり"
+
 except Exception as e:
     print("Failed to construct navigation")
     raise e
