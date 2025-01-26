@@ -113,26 +113,85 @@ file_ids = dict(
     resource_forecast="1vb9rgryFtnJ_akKou3woD4zrtjYD5qcEf4fWCHhAqyM",
 )
 
+# https://drive.google.com/drive/folders/1kXszjwKN9THpzNhAcwwW2Nu2jReNzngP
+file_ids_ordinary_v1 = dict(
+    finished_goods="1AojYA4owj9uHG9LtLJO0UofD0b5nqQmD",
+    materials="1YLEWXn4t3F5QiSkCMC7Y82-yv-ikFBpX",
+    item_types="1bgFIMmXGwt6WHRTj-iqxdLa22KFeW33G",
+    items="1AMlMpEsFhDOZsSOcreZ0nWczyKEqsYDE",
+    companies="157bxFyNk0raurSg3Tkdt5ZX59WIO8AVF",
+    customers="1tn7PQ66Nh52oLAUPDoo4cLhaF8VMGeC6",
+    plants="1VDA-aawDfD9aRMaFdl-srcA9J3gVvn2h",
+    locations="1NMgsgPVwL-umbNCkvsT1UANhJ2vOhK24",
+    storages="1fr_62nhKgqgG_jyGhvK6GXX-9Y0JoE-a",
+    lines="12OFFddfL_4j-SLcP9N3fV61NPg2R1e6Y",
+    years="17ZBTrRAbFajURMuZ5KfBVq6A1pe3Wx02",
+    months="1UqIYBAMo5K_mTaN5CE8QorvtloL57D9_",
+    dates="1Yff_Cu4fSWnRGERQ--jYduFA0MUemR4R",
+    transactions="1csI3yobyXuOuxsG0lHIvTvV274eu8KN5",
+    transaction_types="11aoM0Du7oa4YIAtqxtcursMVlEmreYY4",
+    bom_trees="1tqDXImHFKU_SxdQLVyhfCa0qQL-BhMN5",
+    sales_forecast="1bL9SNnhAdewsU6z-dWbNUSpGtAa0n7wy",
+    sales_plan="1tFcx8cBSCecVoJIh4ku3z6NoZKWup47M",
+    production_plan="1MbYJ2TTNnSPhcWHlRRmsxmUWKcI9BCB-",
+    resource_forecast="16-3n3PhCq2VOsI9GBjMDDGvwE1Fh-MAn",
+    retailers="12dHUtodZJ5Gs8QI1Rv5uXJ8ldMQCXfji",
+    suppliers="1e0o3XyIsRKt3KSRfbtTW3nAnt0Jjnlwh",
+    time="1SSWUFSYzo_TFkrxA_zckK7uzmSJTtSNw",
+)
+
+# https://drive.google.com/drive/folders/1p415xgKVNUbI8d5wcMVe6tP2By8EQRKK
+file_ids_diaster_v1 = dict(
+    finished_goods="1X83NLAXIdJAMQUKj0f3c_mwoqRQTbrQ7",
+    materials="1oKFl9XJsVPFDk411lmrgZNlJQK_q39JB",
+    item_types="1nmzaIxZ0_brs0n8n2yvKZ28s1yN858AE",
+    items="1PhNgEKpou1Xgm7UVFhYm2hbynOpDNI2G",
+    companies="1393ZnrbyMDBc__yGB6l-IDwSiguKB7-U",
+    customers="1SYfsWLG4dpmgbR_NMPCKiAHBR0n69-m6",
+    plants="1OkbpMus0rTjyoE2LtqWGwgs8Na7dqmaS",
+    locations="1_ygUGcDOAw4Zpg89WD76ylsI_eE06L8b",
+    storages="1Ld9HdIFfHbyHICFHqb_lvukpXPsspp9L",
+    lines="1qry_M3k7_nI3rSEflaU4lAgoyWrjWgES",
+    years="1MOLAk9pw62p55-aHv5CMq6RQPcHQhPNf",
+    months="1X1l8fwSxxP3T-4LPGZ8ypuVJoeuYV1Ar",
+    dates="1vcgZLcdyXnudTwvirMyvpuITgU4lX3J6",
+    transactions="1eeBFOvKoNtHWtmNyGTEPV88neKLa18cI",
+    transaction_types="1k5TrS6kL-L2p9xrvGNkEijaDT0fkRXec",
+    bom_trees="16xMEyOq0Sq4auBNFQMiYJISYt8UJRzwX",
+    sales_forecast="1FVP_zYbrgqe4wm9Wr_msYBuQIaHa2mBD",
+    sales_plan="1tpvBRWleElBhSYoFugDjnnldbUF84lZV",
+    production_plan="1ShFxdOHatg2Lu0xdVYZtsmylLam7qkFr",
+    resource_forecast="1U4GqUWQOAOFB2W_VIyEwpA5ZG0hs4iXE",
+    retailers="1RQ3R1KOSrBDvsEzYXHvLeqiJ-D4oPDqa",
+    suppliers="1v_6sfhypFVH39uTxMfe3CWlYdOKXiwzl",
+    time="1_x4uhwB4LKNSwZt-0syytZ0jVR1qAyqP",
+)
+
+datasets = dict(
+    master_data_ordinary=file_ids_ordinary_v1,
+    master_data_disaster=file_ids_diaster_v1,
+)
+
 
 @functions_framework.http
 def load_masterdata(request: Request):
     bucket_name = "planning-master-data"  # Replace with your GCS bucket name
-    dataset_name = "master_data"
     pj_id = "velvety-outcome-448307-f0"
     gcs_client = storage.Client(project=pj_id)  # Initialize the GCS client
     bq_client = bigquery.Client(project=pj_id)  # Initialize BigQuery client
 
-    for file_name, file_id in file_ids.items():
-        url = f"{url_head}/{file_id}/{url_tail}"
-        print(url)
-        try:
-            df = download_and_load_dataframe(url)
-            upload_dataframe_to_gcs(gcs_client, df, bucket_name, f"{file_name}.csv")
-            load_data_from_gcs_to_bigquery(
-                bq_client, bucket_name, file_name, dataset_name, pj_id
-            )
-        except Exception as e:
-            print(f"Error at {file_name}")
-            raise e
+    for dataset_name, file_ids in datasets.items():
+        for file_name, file_id in file_ids.items():
+            url = f"{url_head}/{file_id}/{url_tail}"
+            print(url)
+            try:
+                df = download_and_load_dataframe(url)
+                upload_dataframe_to_gcs(gcs_client, df, bucket_name, f"{file_name}.csv")
+                load_data_from_gcs_to_bigquery(
+                    bq_client, bucket_name, file_name, dataset_name, pj_id
+                )
+            except Exception as e:
+                print(f"Error at {file_name}")
+                raise e
 
     return jsonify(dict(msg="ok"))
