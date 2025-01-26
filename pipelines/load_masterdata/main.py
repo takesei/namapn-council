@@ -113,26 +113,79 @@ file_ids = dict(
     resource_forecast="1vb9rgryFtnJ_akKou3woD4zrtjYD5qcEf4fWCHhAqyM",
 )
 
+# https://drive.google.com/drive/folders/1kXszjwKN9THpzNhAcwwW2Nu2jReNzngP
+file_ids_ordinary_v1 = dict(
+    finished_goods="",
+    materials="",
+    item_types="",
+    items="",
+    companies="",
+    customers="",
+    plants="",
+    locations="",
+    storages="",
+    lines="",
+    years="",
+    months="",
+    dates="",
+    transactions="",
+    transaction_types="",
+    bom_trees="",
+    sales_forecast="",
+    sales_plan="",
+    production_plan="",
+    resource_forecast="",
+)
+
+# https://drive.google.com/drive/folders/1p415xgKVNUbI8d5wcMVe6tP2By8EQRKK
+file_ids_diaster_v1 = dict(
+    finished_goods="",
+    materials="",
+    item_types="",
+    items="",
+    companies="",
+    customers="",
+    plants="",
+    locations="",
+    storages="",
+    lines="",
+    years="",
+    months="",
+    dates="",
+    transactions="",
+    transaction_types="",
+    bom_trees="",
+    sales_forecast="",
+    sales_plan="",
+    production_plan="",
+    resource_forecast="",
+)
+
+datasets = dict(
+    master_data_ordinary=file_ids_ordinary_v1,
+    master_data_disaster=file_ids_diaster_v1,
+)
+
 
 @functions_framework.http
 def load_masterdata(request: Request):
     bucket_name = "planning-master-data"  # Replace with your GCS bucket name
-    dataset_name = "master_data"
     pj_id = "velvety-outcome-448307-f0"
     gcs_client = storage.Client(project=pj_id)  # Initialize the GCS client
     bq_client = bigquery.Client(project=pj_id)  # Initialize BigQuery client
 
-    for file_name, file_id in file_ids.items():
-        url = f"{url_head}/{file_id}/{url_tail}"
-        print(url)
-        try:
-            df = download_and_load_dataframe(url)
-            upload_dataframe_to_gcs(gcs_client, df, bucket_name, f"{file_name}.csv")
-            load_data_from_gcs_to_bigquery(
-                bq_client, bucket_name, file_name, dataset_name, pj_id
-            )
-        except Exception as e:
-            print(f"Error at {file_name}")
-            raise e
+    for dataset_name, file_ids in datasets.items():
+        for file_name, file_id in file_ids.items():
+            url = f"{url_head}/{file_id}/{url_tail}"
+            print(url)
+            try:
+                df = download_and_load_dataframe(url)
+                upload_dataframe_to_gcs(gcs_client, df, bucket_name, f"{file_name}.csv")
+                load_data_from_gcs_to_bigquery(
+                    bq_client, bucket_name, file_name, dataset_name, pj_id
+                )
+            except Exception as e:
+                print(f"Error at {file_name}")
+                raise e
 
     return jsonify(dict(msg="ok"))
