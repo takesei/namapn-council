@@ -157,10 +157,10 @@ file_ids_prediction_v1_kansai_underestimation = dict(
     locations="1a6hTZQMiHKnJ84p6OI-fz75-1jJ95Hui",
     storages="18zs9X-KeHJkAjLp_tHU5cd2GmmxadCIK",
     lines="1BkHZEe8kKvo9dK0sacvoQmJlAXP3HlI3",
-    years="1xMNhMtLDNlOfkx_Pr7jnKjxxlq7Xu0AY",
+    years="1N6oOCsZYSf9dkh3jshvWfW6tsFkc_jkk",
     months="1b0-G5thWwVc8qXSl5ArDFlWC5ePHU-Yo",
     dates="15UTu2KgGQyY8D074MNmsRtYCCCx3NFGE",
-    transactions="12SKbF86-hCOmvjBsncad1wPecFK9SKrI",
+    transactions="1llBXxbFIXH-FS_HQxzgXNBkP5OfksIQ9",
     transaction_types="1hJXuW8tuAuv-jrZ_jxHZ0f4JcOdw7b9k",
     bom_trees="19ykfm5BMKkGVlDs5crnXkF5ZXrRfSvef",
     sales_forecasts="1E8p_jj2iRgyEg0yms8Cm4zhwKs-KT2Ed",
@@ -200,7 +200,7 @@ file_ids_prediction_v1_kyushu = dict(
 )
 
 datasets = dict(
-    master_data_ordinary=file_ids_ordinary_v1,
+    master_data=file_ids_ordinary_v1,
     master_data_disaster=file_ids_diaster_v1,
     master_data_prediction_kansai_underestimation=file_ids_prediction_v1_kansai_underestimation,
     master_data_prediction_kyushu=file_ids_prediction_v1_kyushu,
