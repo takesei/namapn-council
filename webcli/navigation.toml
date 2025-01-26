@@ -17,6 +17,12 @@ title = "ダッシュボード"
 icon = ":material/dashboard:"
 url_path = "dashboard"
 
+[[BI]]
+page = "modules/bi/contingency_plan.py"
+title = "緊急計画"
+icon = ":material/dashboard:"
+url_path = "contingency-plan"
+
 [[Dimension]]
 page = "modules/dimension/overview.py"
 title = "概要"
