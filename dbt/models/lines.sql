@@ -5,7 +5,7 @@ with
     select
       location_code
     from
-      master_data.locations
+      master_data_ordinary.locations
   ),
 
   plants_final as (
@@ -14,7 +14,7 @@ with
       plants.plant_code,
       plants.plant_name
     from
-      master_data.plants as plants
+      master_data_ordinary.plants as plants
     inner join
       locations_final
     on
@@ -29,7 +29,7 @@ with
       lines.production_cost,
       plants_final.plant_code
     from
-      master_data.lines as lines
+      master_data_ordinary.lines as lines
     inner join
       plants_final
     on

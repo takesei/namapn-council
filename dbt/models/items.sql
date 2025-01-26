@@ -6,7 +6,7 @@ with
       item_type_code,
       item_type_name
     from
-      master_data.item_types
+      master_data_ordinary.item_types
   ),
 
   materials_final as (
@@ -15,7 +15,7 @@ with
       material_name,
       item_type_code
     from
-      master_data.materials
+      master_data_ordinary.materials
   ),
 
   finished_goods_final as (
@@ -24,7 +24,7 @@ with
       finished_goods_name,
       item_type_code
     from
-      master_data.finished_goods
+      master_data_ordinary.finished_goods
   ),
 
   union_fg_mat as (

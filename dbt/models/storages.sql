@@ -5,7 +5,7 @@ with
     select
       location_code
     from
-      master_data.locations
+      master_data_ordinary.locations
   ),
 
   plants_final as (
@@ -14,7 +14,7 @@ with
       plants.plant_code,
       plants.plant_name
     from
-      master_data.plants as plants
+      master_data_ordinary.plants as plants
     inner join
       locations_final
     on
@@ -26,10 +26,10 @@ with
       storages.storage_code,
       storages.month,
       storages.storage_name,
-      storages.storage_cost,
+      storages.storage_unit_cost,
       plants_final.plant_code
     from
-      master_data.storages as storages
+      master_data_ordinary.storages as storages
     inner join
       plants_final
     on
