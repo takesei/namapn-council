@@ -3,6 +3,8 @@ import requests
 from io import BytesIO
 from google.cloud import storage
 from google.cloud import bigquery
+import functions_framework
+from flask import Request, jsonify
 
 
 def download_and_load_dataframe(url, file_type="csv", **kwargs):
@@ -112,7 +114,8 @@ file_ids = dict(
 )
 
 
-def load_masterdata():
+@functions_framework.http
+def load_masterdata(request: Request):
     bucket_name = "planning-master-data"  # Replace with your GCS bucket name
     dataset_name = "master_data"
     gcs_client = storage.Client()  # Initialize the GCS client
@@ -131,4 +134,4 @@ def load_masterdata():
         except Exception as e:
             print(f"Error at {file_name}")
             raise e
-
+    return jsonify(dict(msg="ok"))
