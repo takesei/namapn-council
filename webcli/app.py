@@ -1,11 +1,15 @@
 import streamlit as st
+import vertexai
+from vertexai.generative_models import GenerativeModel
 import tomllib
 import duckdb
 import os
 
 # Page Config
 st.set_page_config(
-    page_title="Namaph Council Demo", page_icon=":material/forest:", layout="wide",
+    page_title="Namaph Council Demo",
+    page_icon=":material/forest:",
+    layout="wide",
 )
 
 
@@ -27,6 +31,11 @@ def load_navigation():
 
 
 pages = load_navigation()
+
+# Init ai connection
+vertexai.init(project="velvety-outcome-448307-f0", location="us-west1")
+st.session_state.aiagent = GenerativeModel("gemini-1.5-flash-002")
+st.session_state.aisession = st.session_state.aiagent.start_chat()
 
 
 # Create DB connection
@@ -62,9 +71,15 @@ try:
 
     with st.sidebar:
         with st.container(border=True):
-            st.error("緊急対応", icon="⚠️")
-            "- 台風上陸による調達計画への影響あり"
-            "- SNS反響に起因する需要の急激な変化あり"
+            st.error("**緊急対応**", icon="⚠️")
+            st.page_link(
+                "./modules/bi/contingency_plan.py",
+                label="台風上陸による調達計画影響",
+            )
+            st.page_link(
+                "./modules/bi/contingency_plan.py",
+                label="SNS反響による急激な需要変化",
+            )
 
 except Exception as e:
     print("Failed to construct navigation")

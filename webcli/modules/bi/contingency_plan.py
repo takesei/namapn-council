@@ -1,6 +1,7 @@
 import streamlit as st
-import random
-import time
+from vertexai.generative_models import ChatSession
+from typing import Generator
+
 from vega_datasets import data
 
 
@@ -17,15 +18,10 @@ if "messages" not in st.session_state:
 
 
 # Streamed response emulator
-def response_generator():
-    response = random.choice([
-        "Hello there! How can I assist you today?",
-        "Hi, human! Is there anything I can help you with?",
-        "Do you need help?",
-    ])
-    for word in response.split():
-        yield word + " "
-        time.sleep(0.05)
+def get_response(chat: ChatSession, prompt: str) -> Generator[str]:
+    responses = chat.send_message(prompt, stream=True)
+    for chunk in responses:
+        yield chunk.text
 
 
 @st.dialog("Change BI figure")
@@ -34,7 +30,7 @@ def change_fig(tab: int, col: int):
 
 
 with right:
-    st.subheader("Planning Companion", divider="grey")
+    st.subheader(":material/support_agent: Planning Companion", divider="grey")
     chat_history = st.container(border=True, height=650)
     with chat_history:
         # Display chat messages from history on app rerun
@@ -55,24 +51,26 @@ with right:
             # Display assistant response in chat message container
             with chat_history:
                 with st.chat_message("assistant"):
-                    response = st.write_stream(response_generator())
+                    response = st.write_stream(
+                        get_response(st.session_state.aisession, prompt)
+                    )
             # Add assistant response to chat history
             st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 with left:
-    st.subheader("_Action List_", divider="red")
+    st.subheader(":material/checklist: _Action List_", divider="red")
     with st.container(border=True, height=150):
         st.markdown(
             """
          - [ ] Supplier 102の供給への影響を早急に確認してください。
          - 供給不可の場合、下記順序で対応してください
-         - [ ] Supplier 103の追加供給の可能性確認
-         - [ ] Supplier 101の追加供給の可能性確認
+           - [ ] Supplier 103の追加供給の可能性確認
+           - [ ] Supplier 101の追加供給の可能性確認
          """
         )
 
-    st.subheader("_PickUp BI_", divider="blue")
+    st.subheader(":material/monitoring: _BI PickUps_", divider="blue")
     tabs = st.tabs(["1. XXX", "2. XXX", "3. XXX", ":material/settings: configure"])
     for tab_idx, tab in enumerate(tabs[:-1]):
         with tab:
