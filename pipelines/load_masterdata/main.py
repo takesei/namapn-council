@@ -57,17 +57,16 @@ def load_data_from_gcs_to_bigquery(
         uri = f"gs://{bucket_name}/{source_blob_name}.csv"
 
         # Use source_blob_name as table_id
-        table_id = f'{pj_id}.{source_blob_name.replace("/", "_")}'  # Replace '/' with '_' for valid table name
-        table_ref = client.dataset(dataset_id).table(table_id)
+        table_id = f'{pj_id}.{dataset_name}.{source_blob_name.replace("/", "_")}'  # Replace '/' with '_' for valid table name
 
         try:
-            client.get_table(table_ref)  # Check if table exists
-            print(f"Table {dataset_id}.{table_id} exists. Proceeding with data load.")
+            client.get_table(table_id)  # Check if table exists
+            print(f"Table {table_id} exists. Proceeding with data load.")
         except Exception:
-            print(f"Table {dataset_id}.{table_id} does not exist. Creating table...")
+            print(f"Table {table_id} does not exist. Creating table...")
 
             # Create an empty table with autodetect schema
-            table = bigquery.Table(table_ref)
+            table = bigquery.Table(table_id)
             client.create_table(table)
             print(f"Table {dataset_id}.{table_id} created successfully.")
 
@@ -76,10 +75,11 @@ def load_data_from_gcs_to_bigquery(
             source_format=bigquery.SourceFormat.CSV,
             autodetect=True,  # Automatically detect schema
             skip_leading_rows=1,  # Skip header row
+            write_disposition="WRITE_TRUNCATE",
         )
 
         # Load data from GCS to BigQuery
-        load_job = client.load_table_from_uri(uri, table_ref, job_config=job_config)
+        load_job = client.load_table_from_uri(uri, table_id, job_config=job_config)
         load_job.result()  # Wait for the job to complete
 
         print(f"Data loaded successfully to {dataset_id}.{table_id}")
@@ -118,9 +118,9 @@ file_ids = dict(
 def load_masterdata(request: Request):
     bucket_name = "planning-master-data"  # Replace with your GCS bucket name
     dataset_name = "master_data"
-    gcs_client = storage.Client()  # Initialize the GCS client
-    bq_client = bigquery.Client()  # Initialize BigQuery client
     pj_id = "velvety-outcome-448307-f0"
+    gcs_client = storage.Client(project=pj_id)  # Initialize the GCS client
+    bq_client = bigquery.Client(project=pj_id)  # Initialize BigQuery client
 
     for file_name, file_id in file_ids.items():
         url = f"{url_head}/{file_id}/{url_tail}"
@@ -134,4 +134,5 @@ def load_masterdata(request: Request):
         except Exception as e:
             print(f"Error at {file_name}")
             raise e
+
     return jsonify(dict(msg="ok"))
