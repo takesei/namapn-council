@@ -194,10 +194,38 @@ file_ids_prediction_v1_kansai_underestimation = dict(
     time="1T08IzrwqYFoy3IZf3DMVxbIdvA0yorDl",
 )
 
+# https://drive.google.com/drive/folders/1Pfa8OYZf-tp1hRvepcM22aoIGbrrBpvW
+file_ids_prediction_v1_kyushu = dict(
+#     finished_goods="",
+#     materials="",
+#     item_types="",
+#     items="",
+#     companies="",
+#     customers="",
+#     plants="",
+#     locations="",
+#     storages="",
+#     lines="",
+#     years="",
+#     months="",
+#     dates="",
+#     transactions="",
+#     transaction_types="",
+#     bom_trees="",
+#     sales_forecast="",
+#     sales_plan="",
+#     production_plan="",
+#     resource_forecast="",
+#     retailers="",
+#     suppliers="",
+#     time="",
+)
+
 datasets = dict(
     master_data_ordinary=file_ids_ordinary_v1,
     master_data_disaster=file_ids_diaster_v1,
     master_data_prediction_kansai_underestimation=file_ids_prediction_v1_kansai_underestimation,
+    master_data_prediction_kyushu=file_ids_prediction_v1_kyushu,
 )
 
 
