@@ -90,28 +90,6 @@ def load_data_from_gcs_to_bigquery(
 
 url_head = "https://docs.google.com/spreadsheets/d"
 url_tail = "export?format=csv"
-file_ids = dict(
-    finished_goods="1H6dIv0vHW9x7onsVpuMrUNNSHWaWBUH8",
-    materials="1EYyObI5iqmwF1a63Ujiak5-VI2_kBFJJ",
-    item_types="15mFCkcWvH_QwL1D4FXA9pt8tXRkKMrP5",
-    items="1bxcJ__6cMIQKujigDTe6TGTxea8VPZOP",
-    companies="1Ec1V0KxMiBIwiyXDMoYwiCwpmryG75EU",
-    customers="1UhFnvCOclKNM_gDmHiR6ExnQOiQtumFV",
-    plants="1KHy_OLcKxBJ4zRPZbLqR0h6WytkqXrD0j3ELMtm0GJI",
-    locations="1Xd4CzVXXm69dHV5m-9pg4vmrF72_7RUHzJtGuFE4mlE",
-    storages="120zkxHHgPUHhPvgI50Ue3xDNaPfp0621",
-    lines="1rb2DtvRl_Nuoc1ybfeL_-GkCfFuWa5O5",
-    years="1xwd2meOEHd9E_G3cVu8npj3A5RomvH2HPWrl-sAvodY",
-    months="1vEIsBhBdcPShF1d-S4jkhAHETAVgvqE5dOFLepsQfOg",
-    dates="1Ct8R4LRzhhXJf_B27GN8YTsEL_z5ank6wISTxBya2Fc",
-    transactions="1TiLfW6Awf_MKxz88VcKS0X3TWFJFIXcA69p2-xPYJZU",
-    transaction_types="1gak_bKvsJhcqYDN43BvF6m83XREJfdePQvn_LwqyWk4",
-    bom_trees="1NG8pYZ-OfTyukfY14phYAHpUMbQsK8IoU1SHFhy6AU8",
-    sales_forecast="1pJOqpd1MVY-zLXfA7I8t2ITwBEGnuHOPeqpNDWn5lzU",
-    sales_plan="1L7L_eZuuJJ6-DRi43ZBzEEnmHSbfbU2De8PrvJfY61Q",
-    production_plan="14hln--IN3ckbJws9jHyvTqDdnuw1Gb_bRD84q9XhIpk",
-    resource_forecast="1vb9rgryFtnJ_akKou3woD4zrtjYD5qcEf4fWCHhAqyM",
-)
 
 # https://drive.google.com/drive/folders/1kXszjwKN9THpzNhAcwwW2Nu2jReNzngP
 file_ids_ordinary_v1 = dict(
