@@ -90,28 +90,6 @@ def load_data_from_gcs_to_bigquery(
 
 url_head = "https://docs.google.com/spreadsheets/d"
 url_tail = "export?format=csv"
-file_ids = dict(
-    finished_goods="1H6dIv0vHW9x7onsVpuMrUNNSHWaWBUH8",
-    materials="1EYyObI5iqmwF1a63Ujiak5-VI2_kBFJJ",
-    item_types="15mFCkcWvH_QwL1D4FXA9pt8tXRkKMrP5",
-    items="1bxcJ__6cMIQKujigDTe6TGTxea8VPZOP",
-    companies="1Ec1V0KxMiBIwiyXDMoYwiCwpmryG75EU",
-    customers="1UhFnvCOclKNM_gDmHiR6ExnQOiQtumFV",
-    plants="1KHy_OLcKxBJ4zRPZbLqR0h6WytkqXrD0j3ELMtm0GJI",
-    locations="1Xd4CzVXXm69dHV5m-9pg4vmrF72_7RUHzJtGuFE4mlE",
-    storages="120zkxHHgPUHhPvgI50Ue3xDNaPfp0621",
-    lines="1rb2DtvRl_Nuoc1ybfeL_-GkCfFuWa5O5",
-    years="1xwd2meOEHd9E_G3cVu8npj3A5RomvH2HPWrl-sAvodY",
-    months="1vEIsBhBdcPShF1d-S4jkhAHETAVgvqE5dOFLepsQfOg",
-    dates="1Ct8R4LRzhhXJf_B27GN8YTsEL_z5ank6wISTxBya2Fc",
-    transactions="1TiLfW6Awf_MKxz88VcKS0X3TWFJFIXcA69p2-xPYJZU",
-    transaction_types="1gak_bKvsJhcqYDN43BvF6m83XREJfdePQvn_LwqyWk4",
-    bom_trees="1NG8pYZ-OfTyukfY14phYAHpUMbQsK8IoU1SHFhy6AU8",
-    sales_forecast="1pJOqpd1MVY-zLXfA7I8t2ITwBEGnuHOPeqpNDWn5lzU",
-    sales_plan="1L7L_eZuuJJ6-DRi43ZBzEEnmHSbfbU2De8PrvJfY61Q",
-    production_plan="14hln--IN3ckbJws9jHyvTqDdnuw1Gb_bRD84q9XhIpk",
-    resource_forecast="1vb9rgryFtnJ_akKou3woD4zrtjYD5qcEf4fWCHhAqyM",
-)
 
 # https://drive.google.com/drive/folders/1kXszjwKN9THpzNhAcwwW2Nu2jReNzngP
 file_ids_ordinary_v1 = dict(
@@ -131,13 +109,13 @@ file_ids_ordinary_v1 = dict(
     transactions="1csI3yobyXuOuxsG0lHIvTvV274eu8KN5",
     transaction_types="11aoM0Du7oa4YIAtqxtcursMVlEmreYY4",
     bom_trees="1tqDXImHFKU_SxdQLVyhfCa0qQL-BhMN5",
-    sales_forecast="1bL9SNnhAdewsU6z-dWbNUSpGtAa0n7wy",
-    sales_plan="1tFcx8cBSCecVoJIh4ku3z6NoZKWup47M",
-    production_plan="1MbYJ2TTNnSPhcWHlRRmsxmUWKcI9BCB-",
-    resource_forecast="16-3n3PhCq2VOsI9GBjMDDGvwE1Fh-MAn",
+    sales_forecasts="1bL9SNnhAdewsU6z-dWbNUSpGtAa0n7wy",
+    production_forecasts="1MbYJ2TTNnSPhcWHlRRmsxmUWKcI9BCB-",
+    resource_forecasts="16-3n3PhCq2VOsI9GBjMDDGvwE1Fh-MAn",
     retailers="12dHUtodZJ5Gs8QI1Rv5uXJ8ldMQCXfji",
     suppliers="1e0o3XyIsRKt3KSRfbtTW3nAnt0Jjnlwh",
-    time="1SSWUFSYzo_TFkrxA_zckK7uzmSJTtSNw",
+    times="1SSWUFSYzo_TFkrxA_zckK7uzmSJTtSNw",
+    versions="1GE9IgEmIg_CDutro3bZSzmuX95xuFWOn",
 )
 
 # https://drive.google.com/drive/folders/1p415xgKVNUbI8d5wcMVe6tP2By8EQRKK
@@ -158,18 +136,74 @@ file_ids_diaster_v1 = dict(
     transactions="1eeBFOvKoNtHWtmNyGTEPV88neKLa18cI",
     transaction_types="1k5TrS6kL-L2p9xrvGNkEijaDT0fkRXec",
     bom_trees="16xMEyOq0Sq4auBNFQMiYJISYt8UJRzwX",
-    sales_forecast="1FVP_zYbrgqe4wm9Wr_msYBuQIaHa2mBD",
-    sales_plan="1tpvBRWleElBhSYoFugDjnnldbUF84lZV",
-    production_plan="1ShFxdOHatg2Lu0xdVYZtsmylLam7qkFr",
-    resource_forecast="1U4GqUWQOAOFB2W_VIyEwpA5ZG0hs4iXE",
+    sales_forecasts="1FVP_zYbrgqe4wm9Wr_msYBuQIaHa2mBD",
+    production_forecasts="1ShFxdOHatg2Lu0xdVYZtsmylLam7qkFr",
+    resource_forecasts="1U4GqUWQOAOFB2W_VIyEwpA5ZG0hs4iXE",
     retailers="1RQ3R1KOSrBDvsEzYXHvLeqiJ-D4oPDqa",
     suppliers="1v_6sfhypFVH39uTxMfe3CWlYdOKXiwzl",
-    time="1_x4uhwB4LKNSwZt-0syytZ0jVR1qAyqP",
+    times="1_x4uhwB4LKNSwZt-0syytZ0jVR1qAyqP",
+    versions="106shR6IoXNFkPrnSxICC5_-ltVB_jC6p",
+)
+
+# https://drive.google.com/drive/folders/1QLYjn-B0xcskZZ3g3C7b9lglaN768_o5
+file_ids_prediction_v1_kansai_underestimation = dict(
+    finished_goods="1Gt76gv83Dop3UwcAVwwDpQax2xLktT3Z",
+    materials="1F8Ovn1fjewL3RTJ53sESxjAf91g99GKc",
+    item_types="1mk12icSkXpxwbHmnRiAvl15lt0zSJvFj",
+    items="1F2XeNfdI8gCu4kBu_BuAs1CePHOnL1lJ",
+    companies="1Wxr8NuPa2Te7mskS3xBPJgtX-ISYiLVg",
+    customers="1y1LDh0gnD9eaBWkr-xfwD8dAnUhh-tAt",
+    plants="1qRDFLzSsZOBHE5aAfhRF2QmFKwbCTdUY",
+    locations="1a6hTZQMiHKnJ84p6OI-fz75-1jJ95Hui",
+    storages="18zs9X-KeHJkAjLp_tHU5cd2GmmxadCIK",
+    lines="1BkHZEe8kKvo9dK0sacvoQmJlAXP3HlI3",
+    years="1N6oOCsZYSf9dkh3jshvWfW6tsFkc_jkk",
+    months="1b0-G5thWwVc8qXSl5ArDFlWC5ePHU-Yo",
+    dates="15UTu2KgGQyY8D074MNmsRtYCCCx3NFGE",
+    transactions="1llBXxbFIXH-FS_HQxzgXNBkP5OfksIQ9",
+    transaction_types="1hJXuW8tuAuv-jrZ_jxHZ0f4JcOdw7b9k",
+    bom_trees="19ykfm5BMKkGVlDs5crnXkF5ZXrRfSvef",
+    sales_forecasts="1E8p_jj2iRgyEg0yms8Cm4zhwKs-KT2Ed",
+    production_forecasts="1MZsO8NuSTEFdJj6Y8bXwsAWSza7q5qIM",
+    resource_forecasts="1W9UL74nGfe00GLJApCxnbGiCn2Ga768P",
+    retailers="1-zxdpyOsLz5qlAJ42XMRGaQ_BjC4AyNB",
+    suppliers="1vxDNt3F86BNstnkh738Ey3b-JctBCd6k",
+    times="1T08IzrwqYFoy3IZf3DMVxbIdvA0yorDl",
+    versions="1fOgF_SIksyK54ttFkCxfbMULCbdX5Mu3",
+)
+
+# https://drive.google.com/drive/folders/1Pfa8OYZf-tp1hRvepcM22aoIGbrrBpvW
+file_ids_prediction_v1_kyushu = dict(
+#     finished_goods="",
+#     materials="",
+#     item_types="",
+#     items="",
+#     companies="",
+#     customers="",
+#     plants="",
+#     locations="",
+#     storages="",
+#     lines="",
+#     years="",
+#     months="",
+#     dates="",
+#     transactions="",
+#     transaction_types="",
+#     bom_trees="",
+#     sales_forecasts="",
+#     sales_plan="",
+#     production_forecasts="",
+#     resource_forecasts="",
+#     retailers="",
+#     suppliers="",
+#     times="",
 )
 
 datasets = dict(
-    master_data_ordinary=file_ids_ordinary_v1,
+    master_data=file_ids_ordinary_v1,
     master_data_disaster=file_ids_diaster_v1,
+    master_data_prediction_kansai_underestimation=file_ids_prediction_v1_kansai_underestimation,
+    master_data_prediction_kyushu=file_ids_prediction_v1_kyushu,
 )
 
 
