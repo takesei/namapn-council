@@ -26,7 +26,7 @@ with
       storages.storage_code,
       storages.month,
       storages.storage_name,
-      storages.storage_cost,
+      storages.storage_unit_cost,
       plants_final.plant_code
     from
       master_data.storages as storages

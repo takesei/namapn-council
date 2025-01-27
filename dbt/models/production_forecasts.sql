@@ -3,4 +3,4 @@
 select
     *
 from
-    master_data.sales_plan
+    master_data.production_forecasts
