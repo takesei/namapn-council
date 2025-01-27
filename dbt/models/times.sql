@@ -4,7 +4,7 @@ with
     select
       *
     from
-      master_data_ordinary.years
+      master_data.years
   ),
 
   month_final as (
@@ -13,7 +13,7 @@ with
       months.month_code,
       months.month_name
     from
-      master_data_ordinary.months as months
+      master_data.months as months
     inner join
       year_final
     on
@@ -31,7 +31,7 @@ with
       dates.date_code,
       dates.date_name
     from
-      master_data_ordinary.dates as dates
+      master_data.dates as dates
     inner join
       month_final
     on

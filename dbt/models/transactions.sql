@@ -3,4 +3,4 @@
 select
     *
 from
-    master_data_ordinary.transactions
+    master_data.transactions

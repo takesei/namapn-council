@@ -5,4 +5,4 @@ select
     material_name,
     materials_volume,
     item_type_code
-from master_data_ordinary.materials
+from master_data.materials

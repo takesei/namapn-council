@@ -3,4 +3,4 @@
 select
     *
 from
-    master_data_ordinary.bom_trees
+    master_data.bom_trees

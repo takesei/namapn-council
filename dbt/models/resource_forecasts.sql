@@ -3,4 +3,4 @@
 select
     *
 from
-    master_data_ordinary.resource_forecast
+    master_data.resource_forecasts
