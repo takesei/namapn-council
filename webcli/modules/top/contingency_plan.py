@@ -1,6 +1,7 @@
 import streamlit as st
-from vertexai.generative_models import ChatSession
-from typing import Generator
+from typing import Any
+import pandas as pd
+from io import StringIO
 
 from vega_datasets import data
 
@@ -17,16 +18,28 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 
-# Streamed response emulator
-def get_response(chat: ChatSession, prompt: str) -> Generator[str]:
-    responses = chat.send_message(prompt, stream=True)
-    for chunk in responses:
-        yield chunk.text
-
-
 @st.dialog("Change BI figure")
 def change_fig(tab: int, col: int):
     f"change fig on {tab} {col}"
+
+
+def run_action(infos: list[dict[str, Any]]):
+    for info in infos:
+        print(f"got {info}")
+        if info["type"] == "plot":
+            input = info["input"]
+            if input["plot_type"] == "line":
+                st.line_chart(
+                    data=pd.read_json(StringIO(input["source"])),
+                    x=input["x_axis"],
+                    y=input["y_axis"],
+                )
+            elif input["plot_type"] == "bar":
+                st.bar_chart(
+                    data=pd.read_json(StringIO(input["source"])),
+                    x=input["x_axis"],
+                    y=input["y_axis"],
+                )
 
 
 with right:
@@ -36,7 +49,7 @@ with right:
         # Display chat messages from history on app rerun
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+                message["content"]
 
     with st.container(border=False):
         # Accept user input
@@ -51,11 +64,17 @@ with right:
             # Display assistant response in chat message container
             with chat_history:
                 with st.chat_message("assistant"):
-                    response = st.write_stream(
-                        get_response(st.session_state.aisession, prompt)
-                    )
+                    resp = st.session_state.aiagent.generate_plot(prompt)
+                    response = st.write(resp["msg"])
+                    fig = run_action(resp["actions"])
+
             # Add assistant response to chat history
-            st.session_state.messages.append({"role": "assistant", "content": response})
+            st.session_state.messages.append(
+                {
+                    "role": "assistant",
+                    "content": response,
+                }
+            )
 
 
 with left:
