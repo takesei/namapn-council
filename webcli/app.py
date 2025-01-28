@@ -69,12 +69,8 @@ with st.sidebar:
     with st.container(border=True):
         st.error("**緊急対応**", icon="⚠️")
         st.page_link(
-            "./modules/bi/contingency_plan.py",
+            "./modules/top/contingency_plan.py",
             label="台風上陸による調達計画影響",
-        )
-        st.page_link(
-            "./modules/bi/contingency_plan.py",
-            label="SNS反響による急激な需要変化",
         )
 
 pg.run()
