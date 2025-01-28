@@ -5,23 +5,22 @@ icon = ":material/home:"
 url_path = ""
 default = true
 
+# [[Top]]
+# page = "modules/top/demo_proration.py"
+# title = "DEMO - 按分"
+# icon = ":material/function:"
+# url_path = "demo-proration"
 [[Top]]
-page = "modules/top/demo_proration.py"
-title = "DEMO - 按分"
-icon = ":material/function:"
-url_path = "demo-proration"
+page = "modules/bi/contingency_plan.py"
+title = "緊急計画"
+icon = ":material/dashboard:"
+url_path = "contingency-plan"
 
 [[BI]]
 page = "modules/bi/dashboard.py"
 title = "ダッシュボード"
 icon = ":material/dashboard:"
 url_path = "dashboard"
-
-[[BI]]
-page = "modules/bi/contingency_plan.py"
-title = "緊急計画"
-icon = ":material/dashboard:"
-url_path = "contingency-plan"
 
 [[Dimension]]
 page = "modules/dimension/overview.py"

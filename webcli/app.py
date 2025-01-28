@@ -1,15 +1,17 @@
 import streamlit as st
 import vertexai
-from vertexai.generative_models import GenerativeModel
 import tomllib
 import duckdb
 import os
+
+from genai import GeminiAgent
 
 # Page Config
 st.set_page_config(
     page_title="Namaph Council Demo",
     page_icon=":material/forest:",
     layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
 
@@ -17,12 +19,8 @@ st.set_page_config(
 @st.cache_data(show_spinner=True, persist=False)
 def load_navigation():
     print("Load TOML File")
-    try:
-        with open("navigation.toml", "rb") as f:
-            pages = tomllib.load(f)
-    except Exception as e:
-        print("Toml parsing failed")
-        raise e
+    with open("navigation.toml", "rb") as f:
+        pages = tomllib.load(f)
 
     return {
         section_name: [st.Page(**attr) for attr in page_attrs]
@@ -34,8 +32,7 @@ pages = load_navigation()
 
 # Init ai connection
 vertexai.init(project="velvety-outcome-448307-f0", location="us-west1")
-st.session_state.aiagent = GenerativeModel("gemini-1.5-flash-002")
-st.session_state.aisession = st.session_state.aiagent.start_chat()
+st.session_state.aiagent = GeminiAgent()
 
 
 # Create DB connection
@@ -66,23 +63,18 @@ if "data_fetched" not in st.session_state:
         msg.toast("データ更新失敗, try again later", icon=":material/block:")
 
 # Navigation
-try:
-    pg = st.navigation(pages)
+pg = st.navigation(pages)
 
-    with st.sidebar:
-        with st.container(border=True):
-            st.error("**緊急対応**", icon="⚠️")
-            st.page_link(
-                "./modules/bi/contingency_plan.py",
-                label="台風上陸による調達計画影響",
-            )
-            st.page_link(
-                "./modules/bi/contingency_plan.py",
-                label="SNS反響による急激な需要変化",
-            )
-
-except Exception as e:
-    print("Failed to construct navigation")
-    raise e
+with st.sidebar:
+    with st.container(border=True):
+        st.error("**緊急対応**", icon="⚠️")
+        st.page_link(
+            "./modules/bi/contingency_plan.py",
+            label="台風上陸による調達計画影響",
+        )
+        st.page_link(
+            "./modules/bi/contingency_plan.py",
+            label="SNS反響による急激な需要変化",
+        )
 
 pg.run()
