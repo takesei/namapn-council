@@ -11,7 +11,7 @@ default = true
 # icon = ":material/function:"
 # url_path = "demo-proration"
 [[Top]]
-page = "modules/bi/contingency_plan.py"
+page = "modules/top/contingency_plan.py"
 title = "緊急計画"
 icon = ":material/dashboard:"
 url_path = "contingency-plan"
