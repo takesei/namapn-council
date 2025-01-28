@@ -26,5 +26,5 @@ get-schema:
 	bq --project_id velvety-outcome-448307-f0 ls master_data \
 		| sed -e "1d;2d" \
 		| sed -e "s/TABLE//"  \
-		| xargs -I@ -t bq --project_id velvety-outcome-448307-f0  show --format json  master_data \
+		| xargs -I@ -t bq --project_id velvety-outcome-448307-f0  show --format json  master_data.@ \
 		> schema.txt
