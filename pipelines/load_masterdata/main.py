@@ -22,26 +22,39 @@ def download_and_load_dataframe(url: str, **kwargs: Any) -> pd.DataFrame:
         raise e
 
 
-def upload_dataframe_to_gcs(client, df: pd.DataFrame, bucket_name: str, blob_name: str):
+def upload_dataframe_to_gcs(
+    client,
+    df: pd.DataFrame,
+    bucket_name: str,
+    blob_name: str,
+    version: str,
+):
     """upload in-memory dataframe to gcs"""
     try:
         csv_data = BytesIO()
-        df.to_csv(csv_data, index=False)
+        df.assign(version=version).to_csv(csv_data, index=False)
         csv_data.seek(0)
 
-        blob = client.bucket(bucket_name).blob(blob_name)
+        blob = client.bucket(bucket_name).blob(f"{version}/{blob_name}")
         blob.upload_from_file(csv_data, content_type="text/csv")
-        print(f"DataFrame uploaded successfully to gs://{bucket_name}/{blob_name}")
+        print(
+            f"DataFrame uploaded successfully to gs://{bucket_name}/{version}/{blob_name}"
+        )
     except Exception as e:
         print(f"Error uploading DataFrame to GCS: {e}")
         raise e
 
 
 def load_data_from_gcs_to_bigquery(
-    client, bucket_name: str, blob_name: str, dataset_name: str, pj_id: str
+    client,
+    bucket_name: str,
+    blob_name: str,
+    dataset_name: str,
+    pj_id: str,
+    version: str,
 ):
     try:
-        uri = f"gs://{bucket_name}/{blob_name}.csv"
+        uri = f"gs://{bucket_name}/{version}/{blob_name}.csv"
 
         dataset_id = f"{pj_id}.{dataset_name}"
         table_id = f"{dataset_id}.{blob_name}"
@@ -77,18 +90,21 @@ def load_data_from_gcs_to_bigquery(
 @functions_framework.http
 def load_masterdata(request: Request):
     bucket_name = "planning-master-data"
+    dataset_name = "master_data"
     pj_id = "velvety-outcome-448307-f0"
     gcs_client = storage.Client(project=pj_id)
     bq_client = bigquery.Client(project=pj_id)
 
-    for dataset_name, files in datasets.items():
+    for version, files in datasets.items():
         for name, url in files.items():
             print(url)
             try:
                 df = download_and_load_dataframe(url)
-                upload_dataframe_to_gcs(gcs_client, df, bucket_name, f"{name}.csv")
+                upload_dataframe_to_gcs(
+                    gcs_client, df, bucket_name, f"{name}.csv", version
+                )
                 load_data_from_gcs_to_bigquery(
-                    bq_client, bucket_name, name, dataset_name, pj_id
+                    bq_client, bucket_name, name, dataset_name, pj_id,version
                 )
             except Exception as e:
                 print(f"Error at {name}")

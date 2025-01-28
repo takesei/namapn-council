@@ -133,8 +133,8 @@ def pred_kyushu():
 
 
 datasets = dict(
-    master_data=ordinary(),
-    master_data_disaster=disaster(),
-    master_data_prediction_kansai=pred_kansai(),
-    master_data_prediction_kyushu=pred_kyushu(),
+    ordinal=ordinary(),
+    disaster=disaster(),
+    pred_kansai=pred_kansai(),
+    pred_kyushu=pred_kyushu(),
 )
