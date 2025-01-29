@@ -22,6 +22,19 @@ deploy-load-master:
 		--trigger-http \
 		--allow-unauthenticated
 
+deploy-get-spread-sheet-urls:
+	npm --prefix ./get_spread_sheet_urls install ./get_spread_sheet_urls
+	npm --prefix ./get_spread_sheet_urls run build
+	gcloud functions deploy get_spread_sheet_urls \
+		--project ${pj_id} \
+		--gen2 \
+		--region us-west1 \
+		--source ./get_spread_sheet_urls/dist \
+		--runtime nodejs22 \
+		--trigger-http \
+		--entry-point=getSpreadSheetUrls \
+		--allow-unauthenticated
+
 get-schema:
 	bq --project_id velvety-outcome-448307-f0 ls master_data \
 		| sed -e "1d;2d" \

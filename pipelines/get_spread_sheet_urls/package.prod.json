@@ -1,0 +1,13 @@
+{
+  "name": "pipelines",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "taka-sho",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.5",
+    "googleapis": "^144.0.0",
+    "@googleapis/drive": "^8.14.0"
+  }
+}

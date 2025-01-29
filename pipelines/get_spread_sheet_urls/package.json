@@ -1,0 +1,19 @@
+{
+  "name": "pipelines",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "prebuild": "rm -rf ./dist",
+    "postbuild": "cp ./package.prod.json ./dist/package.json && cp ./package-lock.json ./dist/ && cp -rf ./node_modules/ ./dist/node_modules"
+  },
+  "author": "taka-sho",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.5",
+    "@googleapis/drive": "^8.14.0",
+    "googleapis": "^144.0.0",
+    "typescript": "^5.7.3"
+  }
+}
