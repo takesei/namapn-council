@@ -37,7 +37,7 @@ export const getSpreadSheetUrls: HttpFunction =  async (req: ff.Request, res: ff
 
       return {
         ...acc,
-        [curr.id ?? ""]: curr.name,
+        [curr.name ?? ""]: curr.id ?? "",
       }
     }, {});
 
