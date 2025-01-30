@@ -31,7 +31,7 @@ def ordinary():
         times="1u_1FgtTcybxf5bweuVBIHkrbZ96YnNOY",
         versions="1-HzNSLCEfRt3h9KVTcN-tKod6PiGPvnR",
         routing_forecasts="171JBG_cbqgcKbPSojv4dUpvKRZmoB0-i",
-        routings="1uOOPdPLQkwc-KveEOpetnC3P1Cni9aAs",
+        routing="1uOOPdPLQkwc-KveEOpetnC3P1Cni9aAs",
     )
     return {k: create_download_url(v) for k, v in paths.items()}
 
@@ -63,7 +63,7 @@ def disaster():
         times="1b7t5AV6xqH4POdnjb4Y5eC66CXaBLqb5",
         versions="1_sdKmQbNoZPw7Iph5l_upwgqLrQX7Gpa",
         routing_forecasts="1dOE6AoS1TAoaO2mZFmOcEBz0RWsPX4Ly",
-        routings="14qpDyBfqB2BP2OaBmMoh6BeydxFM3xkv",
+        routing="14qpDyBfqB2BP2OaBmMoh6BeydxFM3xkv",
     )
     return {k: create_download_url(v) for k, v in paths.items()}
 
@@ -95,7 +95,7 @@ def pred_kansai():
         times="1_O0oSWHJFKI60oIy7D5neavsiqSt_xwh",
         versions="1yw1K31oeVbVbn32AK5eoTN8979LdIKwz",
         routing_forecasts="10J5U0dAnX9AWeVc0d2TCZT5GLzriLigg",
-        routings="128zRb4KAV3-h5lJH8Pkx_VCiI44VrCQ4",
+        routing="128zRb4KAV3-h5lJH8Pkx_VCiI44VrCQ4",
     )
     return {k: create_download_url(v) for k, v in paths.items()}
 
@@ -127,7 +127,7 @@ def pred_kyushu():
         times="14bLSiVgAXhdoFPqimQDpD_xiybeU5DrK",
         versions="1NkmbaQ2Ec9DHhZpSGBDCStEhOlDLT8ZQ",
         routing_forecasts="1Xknx1z6C-D8p-_CYt8oyABvm7nQQSjxo",
-        routings="1j991-CO1snUnACnZp-GGXZHladzbroM5",
+        routing="1j991-CO1snUnACnZp-GGXZHladzbroM5",
     )
     return {k: create_download_url(v) for k, v in paths.items()}
 
