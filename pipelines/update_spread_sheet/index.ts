@@ -28,13 +28,14 @@ export const updateSpreadSheet: HttpFunction = async (
 		res.send("bodyにfile_contentsを指定してください");
 		return;
 	}
+  
 
 	console.log(`変更対象のファイルID: ${fileId}`);
 
-	const parsedCsv = parseCsv(Buffer.from(fileContents)) as string[][];
-
-	const xlsxData = buildXlsx([{ data: parsedCsv, name: "", options: {} }]);
 	try {
+		const parsedCsv = parseCsv(Buffer.from(fileContents)) as string[][];
+	
+		const xlsxData = buildXlsx([{ data: parsedCsv, name: "", options: {} }]);
 		await driveClient.files.update({
 			fileId,
 			supportsAllDrives: true,
@@ -55,5 +56,6 @@ export const updateSpreadSheet: HttpFunction = async (
 	} catch (e: unknown) {
 		console.log(e);
 		res.status(500).send(`エラーが起こりました．error: ${e}`);
+		throw e;
 	}
 };
