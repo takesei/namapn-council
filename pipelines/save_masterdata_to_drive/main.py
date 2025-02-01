@@ -51,14 +51,15 @@ def save_masterdata_to_drive(request: Request):
             raise e
 
         try:
-            print('res to update')
-            requests.post(
+            response = requests.post(
                 f"https://us-west1-{pj_id}.cloudfunctions.net/update_spread_sheet",
                 data=json.dumps({
                     "file_id": sheet_id,
                     "file_contents": response.json()
                 })
             )
+            if not response.ok:
+                raise Exception()
         except Exception as e:
             print(f"failed to update sheet_id: {sheet_id}, contents: {response.json()}")
             raise e

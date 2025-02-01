@@ -54,7 +54,7 @@ def disaster():
         dates="188j7-BknQRokmhIpYcQ95mn-DI9XfLhU",
         transactions="1wAuBouFxcOyUftKi2lFgH7cTitWVq_lz",
         transaction_types="1O5rN9BBXGFsAJdBIKR6S6wahQt7o0wsx",
-        bom_trees="1ugj6Zcrt1z8jD58gvHuN15tAj8uMwZXB",
+        bom_trees="1BOSaQy-Pv6HdDG4A82CMb7uzPbPpLI7T",
         sales_forecasts="1n7dMURT3Rr03rvk9UKh5Lvq5NHChpcLG",
         production_forecasts="1S_t6rzOTrT7-fkLKjaaFwQZBXHCdTEs8",
         resource_forecasts="1vLnYDMRVKp7HHf-YEbmcEhfWBjQx3AFL",
