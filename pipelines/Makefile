@@ -47,13 +47,11 @@ deploy-save-master-to-drive:
 		--allow-unauthenticated
 
 deploy-update-spread-sheet:
-	npm --prefix ./update_spread_sheet install ./update_spread_sheet
-	npm --prefix ./update_spread_sheet run build
 	gcloud functions deploy update_spread_sheet \
 		--project ${pj_id} \
 		--gen2 \
 		--region us-west1 \
-		--source ./update_spread_sheet/dist \
+		--source ./update_spread_sheet \
 		--runtime nodejs22 \
 		--trigger-http \
 		--entry-point=updateSpreadSheet \
