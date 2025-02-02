@@ -35,6 +35,29 @@ deploy-get-spread-sheet-urls:
 		--entry-point=getSpreadSheetUrls \
 		--allow-unauthenticated
 
+deploy-save-master-to-drive:
+	uv pip compile ./save_masterdata_to_drive/pyproject.toml -o ./save_masterdata_to_drive/requirements.txt
+	gcloud functions deploy save_masterdata_to_drive \
+		--project ${pj_id} \
+		--gen2 \
+		--region us-west1 \
+		--source ./save_masterdata_to_drive \
+		--runtime python312 \
+		--trigger-http \
+		--allow-unauthenticated
+
+deploy-update-spread-sheet:
+	gcloud functions deploy update_spread_sheet \
+		--project ${pj_id} \
+		--gen2 \
+		--region us-west1 \
+		--source ./update_spread_sheet \
+		--runtime nodejs22 \
+		--trigger-http \
+		--entry-point=updateSpreadSheet \
+		--allow-unauthenticated
+
+
 get-schema:
 	bq --project_id velvety-outcome-448307-f0 ls master_data \
 		| sed -e "1d;2d" \

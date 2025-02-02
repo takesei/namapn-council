@@ -1,0 +1,25 @@
+{
+  "name": "pipelines",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "prebuild": "rm -rf ./dist",
+    "start": "npx functions-framework --target=updateSpreadSheet",
+    "prestart": "npm run build",
+    "lint": "npx @biomejs/biome format --write index.ts && npx @biomejs/biome lint --write index.ts"
+  },
+  "author": "taka-sho",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.5",
+    "@googleapis/drive": "^8.14.0",
+    "csv-parse": "^5.6.0",
+    "node-xlsx": "^0.24.0",
+    "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4"
+  }
+}

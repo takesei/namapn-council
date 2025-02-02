@@ -31,7 +31,7 @@ def ordinary():
         times="1u_1FgtTcybxf5bweuVBIHkrbZ96YnNOY",
         versions="1-HzNSLCEfRt3h9KVTcN-tKod6PiGPvnR",
         routing_forecasts="171JBG_cbqgcKbPSojv4dUpvKRZmoB0-i",
-        routing="1uOOPdPLQkwc-KveEOpetnC3P1Cni9aAs",
+        routings="1uOOPdPLQkwc-KveEOpetnC3P1Cni9aAs",
     )
     return {k: create_download_url(v) for k, v in paths.items()}
 
@@ -54,7 +54,7 @@ def disaster():
         dates="188j7-BknQRokmhIpYcQ95mn-DI9XfLhU",
         transactions="1wAuBouFxcOyUftKi2lFgH7cTitWVq_lz",
         transaction_types="1O5rN9BBXGFsAJdBIKR6S6wahQt7o0wsx",
-        bom_trees="1ugj6Zcrt1z8jD58gvHuN15tAj8uMwZXB",
+        bom_trees="1BOSaQy-Pv6HdDG4A82CMb7uzPbPpLI7T",
         sales_forecasts="1n7dMURT3Rr03rvk9UKh5Lvq5NHChpcLG",
         production_forecasts="1S_t6rzOTrT7-fkLKjaaFwQZBXHCdTEs8",
         resource_forecasts="1vLnYDMRVKp7HHf-YEbmcEhfWBjQx3AFL",
@@ -63,7 +63,7 @@ def disaster():
         times="1b7t5AV6xqH4POdnjb4Y5eC66CXaBLqb5",
         versions="1_sdKmQbNoZPw7Iph5l_upwgqLrQX7Gpa",
         routing_forecasts="1dOE6AoS1TAoaO2mZFmOcEBz0RWsPX4Ly",
-        routing="14qpDyBfqB2BP2OaBmMoh6BeydxFM3xkv",
+        routings="14qpDyBfqB2BP2OaBmMoh6BeydxFM3xkv",
     )
     return {k: create_download_url(v) for k, v in paths.items()}
 
@@ -95,7 +95,7 @@ def pred_kansai():
         times="1_O0oSWHJFKI60oIy7D5neavsiqSt_xwh",
         versions="1yw1K31oeVbVbn32AK5eoTN8979LdIKwz",
         routing_forecasts="10J5U0dAnX9AWeVc0d2TCZT5GLzriLigg",
-        routing="128zRb4KAV3-h5lJH8Pkx_VCiI44VrCQ4",
+        routings="128zRb4KAV3-h5lJH8Pkx_VCiI44VrCQ4",
     )
     return {k: create_download_url(v) for k, v in paths.items()}
 
@@ -127,7 +127,7 @@ def pred_kyushu():
         times="14bLSiVgAXhdoFPqimQDpD_xiybeU5DrK",
         versions="1NkmbaQ2Ec9DHhZpSGBDCStEhOlDLT8ZQ",
         routing_forecasts="1Xknx1z6C-D8p-_CYt8oyABvm7nQQSjxo",
-        routing="1j991-CO1snUnACnZp-GGXZHladzbroM5",
+        routings="1j991-CO1snUnACnZp-GGXZHladzbroM5",
     )
     return {k: create_download_url(v) for k, v in paths.items()}
 

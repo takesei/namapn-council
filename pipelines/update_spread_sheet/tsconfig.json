@@ -1,0 +1,11 @@
+{
+  "files": ["index.ts"],
+  "exclude": ["**/node_modules"],
+  "compilerOptions": {
+    "target": "ES2015",
+    "lib": ["ESNext"],
+    "module": "NodeNext",
+    "outDir": "./dist",
+    "moduleResolution": "NodeNext"
+  }
+}
