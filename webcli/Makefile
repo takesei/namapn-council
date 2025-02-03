@@ -1,4 +1,4 @@
-version = "0.0.1"
+version = "0.0.2"
 project = "velvety-outcome-448307-f0"
 port = 8080
 
@@ -10,9 +10,6 @@ lint:
 
 run-dev-server:
 	@uv run streamlit run app.py
-
-migration:
-	@uv run python ./TEMP/migration.py
 
 build:
 	docker build --platform linux/amd64 --tag namaph-council:$(version) .
