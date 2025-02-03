@@ -24,30 +24,22 @@ process_idは下記のいずれかから選択してください。
   - ユーザーから提供された情報が不十分な場合に選択する。
   - 不足している情報として何が必要かをargに記載してください。
 
-===Response Format
-{
-    "process_id": "選択されたprocess_id"
-    "arg": "それぞれのprocess_idで必要な引数を記載する"
-}
-
 prompt: """
 
+response_schema = {
+    "type": "object",
+    "properties": {
+        "process_id": {"type": "string"},
+        "process_arg": {"type": "string"},
+    },
+    "required": ["process_id", "process_arg"],
+}
+
 organizer_conf = dict(
-    model_name="gemini-2.0-flash-exp",
+    model_name="gemini-1.5-flash",
     generation_config=GenerationConfig(
         temperature=1,
         top_p=0.95,
-        max_output_tokens=8192,
-        response_mime_type="application/json",
-        response_modalities=["TEXT"],
-    response_schema={
-        "type": "object",
-        "properties": {
-            "process_id": {"type": "string"},
-            "arg": {"type": "string"},
-        },
-        "required": ["process_id", "arg"],
-    },
     ),
     system_instruction=[Part.from_text(system_instruction)],
 )

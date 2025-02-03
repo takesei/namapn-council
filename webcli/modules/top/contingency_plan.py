@@ -28,10 +28,8 @@ def start_session():
             response = st.session_state.agent["model"].send_message(prompt)
             st.write("情報登録中")
             st.session_state.agent["chat_history"].append(
-                {"role": "assistant", "content": response["msg"], "fig": None}
+                {"role": "assistant", "content": response.message, "fig": None}
             )
-            st.session_state.agent["last_response"] = response["msg"]
-            st.session_state.agent["strategy"] = response["strategy"]
             st.write("完了")
             st.session_state.agent["status"] = "active"
             st.rerun()
@@ -71,10 +69,10 @@ with right:
                     st.markdown(prompt)
                 with st.chat_message("assistant"):
                     resp = st.session_state.agent["model"].send_message(prompt)
-                    response = st.write(resp["msg"])
-                    fig = run_action(resp["actions"])
+                    st.write(resp.message)
+                    fig = run_action(resp.actions)
             st.session_state.agent["chat_history"].append(
-                {"role": "assistant", "content": resp["msg"], "fig": fig}
+                {"role": "assistant", "content": resp.message, "fig": fig}
             )
 
 
