@@ -1,103 +1,177 @@
-from typing import Any, Generator
-import json
-import requests
 from vertexai.generative_models import (
     GenerativeModel,
     ChatSession,
 )
+from vertexai.generative_models import (
+    FunctionDeclaration,
+    Tool,
+    ToolConfig,
+)
 
-from .models import txt2sql_conf, interpreter_conf
+import json
+from .agent import GeminiAgent
+from .models import txt2sql_conf, interpreter_conf, facilitator_conf, organizer_conf
+from . import functions as F
+from typing import NamedTuple
 
 
-class GeminiAgent:
+JSON: type = dict[str, "JSON"] | list["JSON"] | str | int | float | bool | None
+
+
+class ResponseAction(NamedTuple):
+    action_type: str
+    keyword_arguments: dict[str, JSON]
+
+
+class ScenarioMakerResponse(NamedTuple):
+    message: str
+    strategy: JSON | None
+    actions: list[ResponseAction]
+
+
+class ScenarioMaker(GeminiAgent):
     model: GenerativeModel
     worker_models: dict[str, GenerativeModel]
 
     chat_session: ChatSession | None
+    last_message: str
 
-    def __init__(self):
+    def __init__(self, strategy: JSON):
         # self.model = GenerativeModel(**manager_conf)
         self.worker_models = dict(
             txt2sql=GenerativeModel(**txt2sql_conf),
             interpreter=GenerativeModel(**interpreter_conf),
+            facilitator=GenerativeModel(**facilitator_conf),
         )
         self.chat_session = None
+        self.last_message = "No previous message"
+        self.strategy = strategy
 
-    def send_message(self, prompt: str, **config: Any) -> Generator[str] | str:
+        self.callable_functions = [
+            FunctionDeclaration.from_func(self.get_info),
+            FunctionDeclaration.from_func(self.facilitate),
+            FunctionDeclaration.from_func(self.load_data),
+            FunctionDeclaration.from_func(self.return_error),
+        ]
+
+    def get_process_id(self, prompt) -> tuple[str, JSON]:
+        """
+        promptから今行うべき処理のprocess_idを取得する関数
+        """
+        print("Debug: process特定LLMが特定開始")
+        model = GenerativeModel(**organizer_conf)
+
+        tool = Tool(function_declarations=self.callable_functions)
+        response = model.generate_content(
+            prompt,
+            tools=[tool],
+            tool_config=ToolConfig(
+                function_calling_config=ToolConfig.FunctionCallingConfig(
+                    mode=ToolConfig.FunctionCallingConfig.Mode.ANY,
+                    allowed_function_names=[],
+                )
+            ),
+        )
+
+        func = response.candidates[0].function_calls[0].name
+        arg = response.candidates[0].function_calls[0].args
+
+        return func, arg
+
+    def facilitate(self, prompt: str) -> ScenarioMakerResponse:
         if self.chat_session is None:
-            self.chat_session = self.model.start_chat()
+            self.chat_session = self.worker_models["facilitator"].start_chat()
 
-        response = self.chat_session.send_message(prompt, stream=False, **config)
-        return response.text
+        response = self.chat_session.send_message(prompt, stream=False)
+        result = json.loads(response.text)
+        self.last_message = result["msg"]
+        self.strategy = result["strategy_scenario"]
+        return ScenarioMakerResponse(
+            message=self.last_message,
+            strategy=self.strategy,
+            actions=[],
+        )
 
-    def send_message_streaming(
-        self, prompt: str, **config: Any
-    ) -> Generator[str] | str:
-        if self.chat_session is None:
-            self.chat_session = self.model.start_chat()
+    def load_data(self) -> ScenarioMakerResponse:
+        result = ScenarioMakerResponse(
+            message="(Sample) データロードが完了しました。状況が変わった時に通知します。",
+            strategy=self.strategy,
+            actions=[],
+        )
+        self.last_message = result.message
+        return result
 
-        for chunk in self.chat_session.send_message(prompt, stream=True, **config):
-            yield chunk.text
+    def return_error(self) -> ScenarioMakerResponse:
+        result = ScenarioMakerResponse(
+            message="エラー: もう一度入力してください",
+            strategy=self.strategy,
+            actions=[],
+        )
+        return result
 
-    def generate_plot(self, prompt: str):
+    def get_info(self, prompt: str) -> ScenarioMakerResponse:
         """プロンプトを元に、text-to-SQLを実行しパースされたデータを取得する"""
         query = self.run_worker_agent("txt2sql", prompt)
-        dataframe_json = self.run_query(query["query"])
+        dataframe_json = F.run_bq_query(query["query"])
         info = self.run_worker_agent("interpreter", dataframe_json)
 
-        output_json = {
-            "msg": info["interpretation"],
-            "actions": [
+        x = info["x"] if info["x"] != "NULL" else None
+        y = info["y"] if info["y"] != "NULL" else None
+
+        self.last_message = info["interpretation"]
+
+        return ScenarioMakerResponse(
+            message=self.last_message,
+            strategy=self.strategy,
+            actions=[
                 {
                     "type": "plot",
                     "input": {
-                        # data_dictなど、実際にplotlyで使いたい形式に応じて
                         "source": dataframe_json,
                         "plot_type": info["plot_type"],
-                        "x_axis": info["x_axis"],
-                        "y_axis": info["y_axis"],
+                        "x": x,
+                        "y": y,
                     },
                 }
             ],
-        }
-        return output_json
-
-    def run_worker_agent(self, worker_name: str, prompt: str):
-        model = self.worker_models[worker_name]
-        content = model.generate_content(prompt, stream=False).text
-
-        # JSON文字列をパース
-        try:
-            data = json.loads(content)  # JSONを辞書に変換
-        except json.JSONDecodeError as e:
-            print(f"JSONのパースに失敗しました: {e}")
-        except KeyError as e:
-            print(f"キー '{e}' が存在しません。")
-
-        return data
-
-    def run_query(self, query: str) -> str:
-        """デプロイ済みの Cloud Run/Functions を呼び出すための関数"""
-
-        print("Query from LLM")
-        print(query)
-        print("==============\n")
-
-        # Endpoint of Cloud Functions
-        url = "https://execute-bq-query-42822254114.us-west1.run.app"
-
-        response = requests.post(
-            url,
-            headers={"Content-Type": "application/json"},
-            json={"query": query},
-            timeout=10,
         )
 
-        if response.status_code == 200:
-            data = response.json()
-            return response.text if data is None else data["data"]
+    def send_message(
+        self,
+        prompt: str,
+    ) -> ScenarioMakerResponse:
+        prompt = f"""
+        現在のStrategyシナリオ:,
+        {json.dumps(self.strategy)},
+        1つ前のLLMの発言:,
+        {self.last_message},
+        ユーザーの入力:,
+        {prompt},
+        """
+        process_id, process_arg = self.get_process_id(prompt)
 
+        if process_id == "get_info":
+            prompt = f"""
+            {prompt},
+            調べるべき内容:,
+            {process_arg},
+            """
+            resp = self.get_info(prompt)
+
+        elif process_id == "facilitate":
+            prompt = f"""
+            現在のStrategyシナリオ:,
+            {json.dumps(self.strategy)}
+            ユーザーのinput:
+            {prompt}
+            一つ前のLLMの発言:
+            {self.last_message}
+            """
+            resp = self.facilitate(prompt)
+
+        elif process_id == "load_data":
+            resp = self.load_data()
         else:
-            raise RuntimeError(
-                f"Error: status code {response.status_code}, body={response.text}"
-            )
+            resp = self.return_error()
+
+        return resp
