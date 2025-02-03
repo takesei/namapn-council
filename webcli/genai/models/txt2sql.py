@@ -14,30 +14,34 @@ Please help to generate a BigQuery query to answer the question. Your response s
 4. Please format the query before responding.
 5. Please always respond with a valid well-formed raw JSON object with the following format. WITHOUT code block marker.
 
-===Response Format
-{
-    "query": "A generated SQL query when context is sufficient.",
-    "explanation": "An explanation of failing to generate the query."
-}
 Question: """
+
+response_schema = {
+    "type": "object",
+    "description": "A couple of BigQuery query and explanation of failing reason.",
+    "properties": {
+        "query": {
+            "type": "STRING",
+            "description": "A generated BigQuery query will be described here when the context is sufficient.",
+        },
+        "explanation": {
+            "type": "STRING",
+            "description": "An explanation of failing to generate the query.",
+        },
+    },
+    "required": ["query"],
+}
 
 
 txt2sql_conf = dict(
-    model_name="gemini-2.0-flash-exp",
+    model_name="gemini-1.5-flash",
     generation_config=GenerationConfig(
         temperature=1,
         top_p=0.95,
         max_output_tokens=8192,
         response_modalities=["TEXT"],
         response_mime_type="application/json",
-        response_schema={
-            "type": "OBJECT",
-            "properties": {
-                "query": {"type": "STRING"},
-                "explanation": {"type": "STRING"},
-            },
-            "required": ["query"],
-        },
+        response_schema=response_schema,
     ),
     system_instruction=[Part.from_text(system_instruction)],
 )

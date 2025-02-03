@@ -12,9 +12,9 @@ BQからの結果を元に、データの解釈を日本語で記述してくだ
 - "plot_type": {"type": "string"}
     データをplotlyでプロットする際のプロット方式("bar"または"line")を記載してください。
 - "x": {"type": "string"}
-    x軸に設定するべき属性を記載してください。
+    x軸に設定するべき属性を記載してください。ない場合はNULLを出力してください.
 - "y": {"type": "string"}
-    y軸に設定するべき属性を記載してください。
+    y軸に設定するべき属性を記載してください。ない場合はNULLを出力してください.
 - "x_label": {"type": "string"}
     x軸のラベルを記載してください。後ろに単位を"(単位)"の形で記載してください
 - "y_label": {"type": "string"}
@@ -25,7 +25,7 @@ BQからの結果を元に、データの解釈を日本語で記述してくだ
 Data: """
 
 interpreter_conf = dict(
-    model_name="gemini-2.0-flash-exp",
+    model_name="gemini-1.5-flash",
     generation_config=GenerationConfig(
         temperature=1,
         top_p=0.95,
