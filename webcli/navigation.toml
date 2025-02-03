@@ -5,19 +5,8 @@ icon = ":material/home:"
 url_path = ""
 default = true
 
-# [[Top]]
-# page = "modules/top/demo_proration.py"
-# title = "DEMO - 按分"
-# icon = ":material/function:"
-# url_path = "demo-proration"
 [[Top]]
-page = "modules/top/contingency_plan.py"
-title = "緊急計画"
-icon = ":material/dashboard:"
-url_path = "contingency-plan"
-
-[[BI]]
-page = "modules/bi/dashboard.py"
+page = "modules/top/dashboard.py"
 title = "ダッシュボード"
 icon = ":material/dashboard:"
 url_path = "dashboard"
@@ -29,56 +18,55 @@ icon = ":material/function:"
 url_path = "dimension-overview"
 
 [[Dimension]]
-page = "modules/dimension/product.py"
-title = "品目軸"
+page = "modules/dimension/axis.py"
+title = "軸設定"
 icon = ":material/function:"
-url_path = "dimenstion-product"
+url_path = "axis"
 
-[[Dimension]]
-page = "modules/dimension/organization.py"
-title = "組織軸"
+[[Transaction]]
+page = "modules/transaction/overview.py"
+title = "概要"
 icon = ":material/function:"
-url_path = "dimenstion-organization"
+url_path = "transaction-overview"
 
-[[Dimension]]
-page = "modules/dimension/customer.py"
-title = "顧客軸"
+[[Transaction]]
+page = "modules/transaction/transactions.py"
+title = "過去実績"
 icon = ":material/function:"
-url_path = "dimenstion-customer"
+url_path = "archive"
 
-[[Dimension]]
-page = "modules/dimension/calender.py"
-title = "時間軸"
-icon = ":material/function:"
-url_path = "dimenstion-calender"
-
-[[Dimension]]
-page = "modules/dimension/logistics.py"
-title = "ロジスティクス軸"
-icon = ":material/function:"
-url_path = "dimenstion-logistics"
-
-[[YearlyPlanning]]
-page = "modules/yearly_planning/bp.py"
+[[Planning]]
+page = "modules/planning/bp.py"
 title = "年間計画"
 icon = ":material/edit:"
 url_path = "bp"
 
-[[SalesPlanning]]
-page = "modules/sales_planning/sales.py"
+[[Planning]]
+page = "modules/planning/sales.py"
 title = "販売計画"
 icon = ":material/edit:"
 url_path = "sales-plan"
 
-
-[[SupplyPlanning]]
-page = "modules/supply_planning/supply.py"
+[[Planning]]
+page = "modules/planning/supply.py"
 title = "供給計画"
 icon = ":material/edit:"
 url_path = "supply-plan"
 
-[[SupplyPlanning]]
-page = "modules/supply_planning/psi.py"
+[[Planning]]
+page = "modules/planning/proration.py"
+title = "調達計画"
+icon = ":material/edit:"
+url_path = "proration-plan"
+
+[[Planning]]
+page = "modules/planning/psi.py"
 title = "PSI計算"
 icon = ":material/function:"
 url_path = "psi"
+
+[[EventSupport]]
+page = "modules/top/contingency_plan.py"
+title = "緊急計画"
+icon = ":material/dashboard:"
+url_path = "contingency-plan"
