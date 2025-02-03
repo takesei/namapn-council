@@ -1,5 +1,3 @@
-import streamlit as st
-
 version = "alpha-0.1"
 date = "2024/12/25"
 author = "Sei Takeda <se06k14@gmail.com>"
@@ -18,4 +16,3 @@ f"""
 - https://creators.j-mediaarts.bunka.go.jp/project/namaph
 - https://drive.google.com/drive/u/0/folders/1sEsZQtXRJ3qowvImoLU3H6AMkjnhi1If
 """
-

@@ -5,7 +5,8 @@ port = 8080
 .PHONY: dev-server lint
 
 lint:
-	@uvx ruff check
+	@uvx ruff check --fix
+	@uvx ruff format
 
 run-dev-server:
 	@uv run streamlit run app.py

@@ -1,4 +1,4 @@
-from typing import Any, Generator
+from typing import Any
 import json
 from vertexai.generative_models import (
     GenerativeModel,

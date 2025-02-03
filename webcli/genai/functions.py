@@ -27,5 +27,5 @@ def run_bq_query(query: str) -> str:
             f"Error: status code {response.status_code}, body={response.text}"
         )
 
-def load_spread_sheet(url: str) -> None:
-    ...
+
+def load_spread_sheet(url: str) -> None: ...
