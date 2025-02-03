@@ -13,10 +13,6 @@ data = [
     (data.barley(), dict(x="year", y="yield", color="site", stack=False)),
 ]
 
-# Initialize chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
 
 @st.dialog("Change BI figure")
 def change_fig(tab: int, col: int):
@@ -40,6 +36,8 @@ def run_action(infos: list[dict[str, Any]]):
                     x=input["x_axis"],
                     y=input["y_axis"],
                 )
+            else:
+                return None
 
 
 with right:
@@ -50,6 +48,8 @@ with right:
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 message["content"]
+                if "fig" in message and message["fig"] is not None:
+                    message["fig"]
 
     with st.container(border=False):
         # Accept user input
@@ -64,16 +64,20 @@ with right:
             # Display assistant response in chat message container
             with chat_history:
                 with st.chat_message("assistant"):
-                    resp = st.session_state.aiagent.generate_plot(prompt)
+                    resp = st.session_state.aiagent.send_message(
+                        prompt,
+                        st.session_state.strategy_scenario,
+                        st.session_state.agent_ai_last_msg,
+                    )
                     response = st.write(resp["msg"])
+                    st.session_state.agent_ai_last_msg = response
+                    st.session_state.strategy_scenario = resp["strategy"]
                     fig = run_action(resp["actions"])
 
             # Add assistant response to chat history
+            st.session_state.messages.append({"role": "assistant", "content": response})
             st.session_state.messages.append(
-                {
-                    "role": "assistant",
-                    "content": response,
-                }
+                {"role": "assistant", "content": response, "fig": fig}
             )
 
 
