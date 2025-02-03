@@ -3,7 +3,6 @@ import streamlit as st
 "# Instant BI"
 
 "## Supply Plan"
-st.session_state.sp
 
 df = (
     st.session_state.sp.loc[
