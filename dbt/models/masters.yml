@@ -1,7 +1,6 @@
 sources:
   - name: masters
-    schema: master_data # dataset
-    database: velvety-outcome-448307-f0 # project
+    schema: master_data
     tables:
       - name: bom_trees
       - name: companies
