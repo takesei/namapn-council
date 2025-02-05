@@ -16,5 +16,19 @@ clean-targets:
 
 models:
   namaph_dwh:
-    +materialized: view
     +database: velvety-outcome-448307-f0
+    masters:
+      +materialized: view
+    forecasts:
+      +materialized: view
+    transactions:
+      +materialized: view
+
+  elementary:
+    +schema: "elementary"
+
+
+flags:
+  require_explicit_package_overrides_for_builtin_materializations: false
+  source_freshness_run_project_hooks: True
+
