@@ -1,0 +1,7 @@
+item_code,resource_code,item_type,item_name,item_volume
+I001,FG001,T001,Coke,0.001
+I002,FG002,T001,Coke zero,0.001
+I010,M001,T002,Water,0.001
+I011,M002,T002,Sugar,2e-06
+I012,M003,T002,Seasoning Coke,1e-06
+I013,M004,T002,Seasoning Coke zero,1e-06

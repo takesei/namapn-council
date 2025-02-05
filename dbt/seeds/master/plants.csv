@@ -1,0 +1,9 @@
+plant_code,plant_name,location_code
+P001,hokkaido_plant,L001
+P002,tohoku_plant,L002
+P003,kanto_plant,L003
+P004,chubu_plant,L004
+P005,kansai_plant,L005
+P006,chugoku_plant,L006
+P007,shikoku_plant,L007
+P008,kyushu_plant,L008

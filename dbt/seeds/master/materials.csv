@@ -1,0 +1,5 @@
+material_code,material_name,item_code,item_type_code,material_volume
+M001,Water,I010,T002,0.001
+M002,Sugar,I011,T002,2e-06
+M003,Seasoning Coke,I012,T002,1e-06
+M004,Seasoning Coke zero,I013,T002,1e-06
