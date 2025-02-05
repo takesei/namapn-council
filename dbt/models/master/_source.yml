@@ -1,6 +1,6 @@
 sources:
-  - name: masters
-    schema: master_data
+  - name: master
+    schema: master
     tables:
       - name: bom_trees
       - name: companies

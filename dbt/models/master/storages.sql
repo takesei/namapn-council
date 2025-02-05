@@ -3,17 +3,17 @@ with
 locs as (
   select
     *
-  from {{ source("masters", "locations") }}
+  from {{ source("master", "locations") }}
 ),
 plants as (
   select
     *
-  from {{ source("masters", "plants") }}
+  from {{ source("master", "plants") }}
 ),
 stores as (
   select
     *
-  from {{ source("masters", "storages") }}
+  from {{ source("master", "storages") }}
 ),
 time as(
   select 
@@ -25,8 +25,6 @@ time as(
 final as (
   select
     t.time_id,
-    s.version,
-    p.is_active,
     l.location_code,
     l.location_name,
     p.plant_code,
@@ -41,7 +39,7 @@ final as (
   from stores as s
   left join plants as p on s.plant_code = p.plant_code
   left join locs as l on p.location_code = l.location_code
-  left join time as t on s.month = t.month and 2025 = t.year and 1 = t.date
+  left join time as t on s.month_code = t.month and s.year_code = t.year and s.date_code = t.date
 )
 
 

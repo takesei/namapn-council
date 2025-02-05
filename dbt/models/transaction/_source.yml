@@ -1,6 +1,6 @@
 sources:
-  - name: transactions
-    schema: master_data
+  - name: transaction
+    schema: master
     tables:
       - name: transactions
       - name: transaction_types

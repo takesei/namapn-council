@@ -1,6 +1,6 @@
 sources:
-  - name: forecasts
-    schema: master_data
+  - name: forecast
+    schema: master
     tables:
       - name: production_forecasts
       - name: resource_forecasts

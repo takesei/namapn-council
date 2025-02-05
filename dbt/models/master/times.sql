@@ -4,19 +4,19 @@ year as (
   select
     *
   from
-    {{ source("masters", "years") }}
+    {{ source("master", "years") }}
 ),
 month as (
   select
     *
   from
-    {{ source("masters", "months") }}
+    {{ source("master", "months") }}
 ),
 date as (
   select
     *
   from
-    {{ source("masters", "dates") }}
+    {{ source("master", "dates") }}
 ),
 
 ---final
@@ -34,11 +34,10 @@ final as (
     m.month_code as month,
     m.month_name,
     d.date_code as date,
-    d.date_name,
-    d.version
+    d.date_name
   from date as d
-  left join month as m on d.month_code = m.month_code and d.version = m.version
-  left join year as y on m.year_code = y.year_code and m.version = y.version
+  left join month as m on d.month_code = m.month_code
+  left join year as y on m.year_code = y.year_code
 )
 
 select * from final

@@ -3,12 +3,12 @@ with
 fg as (
   select
     *
-  from {{ source("masters", "finished_goods") }}
+  from {{ source("master", "finished_goods") }}
 ),
 type as (
   select
     *
-  from {{ source("masters", "item_types") }}
+  from {{ source("master", "item_types") }}
 ),
 
 --- final
@@ -17,11 +17,8 @@ final as (
     f.finished_goods_code,
     f.finished_goods_name,
     f.item_code,
-    f.item_type_code,
-    f.finished_goods_volume,
-    f.is_active,
-    f.version,
-    t.item_type_name as item_type
+    t.item_type_name as item_type,
+    f.finished_goods_volume
   from fg as f
   left join type as t on f.item_type_code = t.item_type_code
 )

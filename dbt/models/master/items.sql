@@ -1,3 +1,5 @@
+-- depends_on: {{ ref('finished_goods') }}
+
 with
 --- load
 fg as (

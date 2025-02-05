@@ -4,6 +4,7 @@ version: '0.0.1'
 
 profile: 'namaph'
 
+macro-paths: ["macros"]
 model-paths: ["models"]
 test-paths: ["tests"]
 seed-paths: ["seeds"]
@@ -17,15 +18,22 @@ clean-targets:
 models:
   namaph_dwh:
     +database: velvety-outcome-448307-f0
-    masters:
+    +schema: mart
+    master:
       +materialized: view
-    forecasts:
+    forecast:
       +materialized: view
-    transactions:
+    transaction:
       +materialized: view
 
   elementary:
     +schema: "elementary"
+
+seeds:
+  namaph_dwh:
+    +full_refresh: true
+    +database: velvety-outcome-448307-f0
+    +schema: master
 
 
 flags:
