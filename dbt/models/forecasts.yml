@@ -1,0 +1,9 @@
+sources:
+  - name: forecasts
+    schema: master_data
+    database: velvety-outcome-448307-f0
+    tables:
+      - name: production_forecasts
+      - name: resource_forecasts
+      - name: routing_forecasts
+      - name: sales_forecasts

@@ -1,0 +1,31 @@
+sources:
+  - name: masters
+    schema: master_data # dataset
+    database: velvety-outcome-448307-f0 # project
+    tables:
+      - name: bom_trees
+      - name: companies
+      - name: customers
+      - name: dates
+      - name: finished_goods
+      - name: item_types
+      - name: items
+      - name: lines
+      - name: locations
+      - name: materials
+      - name: months
+      - name: plants
+      - name: production_forecasts
+      - name: resource_forecasts
+      - name: retailers
+      - name: routing
+      - name: routing_forecasts
+      - name: routings
+      - name: sales_forecasts
+      - name: storages
+      - name: suppliers
+      - name: times
+      - name: transaction_types
+      - name: transactions
+      - name: versions
+      - name: years

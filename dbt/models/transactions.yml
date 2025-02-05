@@ -1,0 +1,7 @@
+sources:
+  - name: transactions
+    schema: master_data
+    database: velvety-outcome-448307-f0
+    tables:
+      - name: transactions
+      - name: transaction_types
