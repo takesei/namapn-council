@@ -35,7 +35,8 @@ final as (
     s.target_quantity,
     s.storage_unit_cost,
     l.longuitude,
-    l.latitude
+    l.latitude,
+    s.version
   from stores as s
   left join plants as p on s.plant_code = p.plant_code
   left join locs as l on p.location_code = l.location_code
