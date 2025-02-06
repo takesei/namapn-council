@@ -1,0 +1,7 @@
+sources:
+  - name: transaction
+    schema: master
+    tables:
+      - name: transactions_raw
+      - name: transaction_types_master
+

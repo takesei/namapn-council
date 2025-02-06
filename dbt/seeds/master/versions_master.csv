@@ -1,0 +1,5 @@
+version_code,version_name,is_active
+V001,ordinary,True
+V002,event_disaster,True
+V003,strategy_kansai,True
+V004,strategy_kyushu,True

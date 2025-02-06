@@ -4,23 +4,37 @@ version: '0.0.1'
 
 profile: 'namaph'
 
-# These configurations specify where dbt should look for different types of files.
-# The `source-paths` config, for example, states that models in this project can be
-# found in the "models/" directory. You probably won't need to change these!
-model-paths: ["models"]
-analysis-paths: ["analysis"]
-test-paths: ["tests"]
-seed-paths: ["seeds"]
 macro-paths: ["macros"]
-snapshot-paths: ["snapshots"]
+model-paths: ["models"]
+seed-paths: ["seeds"]
 
 target-path: "target"
 clean-targets:
   - "target"
   - "dbt_packages"
 
-
 models:
   namaph_dwh:
-    master_sheets:
+    +database: velvety-outcome-448307-f0
+    +schema: mart
+    master:
       +materialized: table
+    forecast:
+      +materialized: table
+    transaction:
+      +materialized: table
+
+  elementary:
+    +schema: "elementary"
+
+seeds:
+  namaph_dwh:
+    +full_refresh: true
+    +database: velvety-outcome-448307-f0
+    +schema: master
+
+
+flags:
+  require_explicit_package_overrides_for_builtin_materializations: false
+  source_freshness_run_project_hooks: True
+

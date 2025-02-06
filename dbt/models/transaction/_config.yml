@@ -1,0 +1,14 @@
+models:
+  - name: transactions
+    schema: mart
+    columns:
+      - name: transaction_type
+        tests:
+          - relationships:
+              to: source('transaction', 'transaction_types_master')
+              field: transaction_type_name
+      - name: time_id
+        tests:
+          - relationships:
+              to: ref('times')
+              field: time_id

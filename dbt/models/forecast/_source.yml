@@ -1,0 +1,9 @@
+sources:
+  - name: forecast
+    schema: master
+    tables:
+      - name: production_forecasts_raw
+      - name: resource_forecasts_raw
+      - name: routing_forecasts_raw
+      - name: sales_forecasts_raw
+
