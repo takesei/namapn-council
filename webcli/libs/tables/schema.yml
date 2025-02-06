@@ -1,0 +1,51 @@
+master:
+  - name: companies_master
+  - name: customers_master
+  - name: dates_master
+  - name: finished_goods_master
+  - name: item_types_master
+  - name: items_master
+  - name: lines_master
+  - name: locations_master
+  - name: materials_master
+  - name: months_master
+  - name: plants_master
+  - name: production_forecasts_raw
+  - name: resource_forecasts_raw
+  - name: retailers_master
+  - name: routing_forecasts_raw
+  - name: routings_master
+  - name: sales_forecasts_raw
+  - name: storages_master
+  - name: suppliers_master
+  - name: transaction_types_master
+  - name: transactions_raw
+  - name: versions_master
+  - name: years_master
+mart:
+  dimension:
+    version:
+      - versions
+    item:
+      - finished_goods
+      - materials
+      - items
+      - bom_trees
+    customer:
+      - customers
+    company:
+      - companies
+    plant:
+      - lines
+      - storages
+    transp:
+      - routings
+    time:
+      - times
+  forecast:
+    - production_forecasts
+    - resource_forecasts
+    - routing_forecasts
+    - sales_forecasts
+  transaction:
+    - transactions
