@@ -11,35 +11,24 @@ title = "ダッシュボード"
 icon = ":material/dashboard:"
 url_path = "dashboard"
 
-[[Dimension]]
-page = "modules/dimension/overview.py"
-title = "概要"
-icon = ":material/function:"
-url_path = "dimension-overview"
-
-[[Dimension]]
-page = "modules/dimension/axis.py"
-title = "軸設定"
-icon = ":material/function:"
-url_path = "axis"
-
 [[Data]]
 page = "modules/data/overview.py"
 title = "概要"
 icon = ":material/function:"
-url_path = "transaction-overview"
+url_path = "data-overview"
 
 [[Data]]
-page = "modules/data/forecasts.py"
-title = "AI予測"
+page = "modules/data/axis.py"
+title = "属性設定"
 icon = ":material/function:"
-url_path = "forecast"
+url_path = "axis"
 
 [[Data]]
-page = "modules/data/transactions.py"
-title = "過去実績"
+page = "modules/data/vsforecast.py"
+title = "予測/実績"
 icon = ":material/function:"
-url_path = "archive"
+url_path = "vsforecast"
+
 
 [[Planning]]
 page = "modules/planning/bp.py"
