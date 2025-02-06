@@ -1,6 +1,7 @@
 import streamlit as st
 import tomllib
 from jinja2 import Environment, FileSystemLoader
+import yaml
 
 from genai import ScenarioMaker
 
@@ -40,6 +41,8 @@ def set_template(path: str):
 @st.cache_resource
 def get_data_catalog(db: str):
     print("Create DB Session")
-    catalog = DataCatalog(db)
+    with open("libs/tables/schema.yml", "r") as f:
+        schema = yaml.safe_load(f)["mart"]
+    catalog = DataCatalog(db, schema)
 
     return catalog

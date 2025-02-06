@@ -11,41 +11,23 @@ title = "ダッシュボード"
 icon = ":material/dashboard:"
 url_path = "dashboard"
 
-[[Dimension]]
-page = "modules/dimension/overview.py"
-title = "概要"
-icon = ":material/function:"
-url_path = "dimension-overview"
-
-[[Dimension]]
-page = "modules/dimension/axis.py"
-title = "軸設定"
-icon = ":material/function:"
-url_path = "axis"
-
 [[Data]]
 page = "modules/data/overview.py"
 title = "概要"
 icon = ":material/function:"
-url_path = "transaction-overview"
+url_path = "data-overview"
 
 [[Data]]
-page = "modules/data/forecasts.py"
-title = "AI予測"
+page = "modules/data/axis.py"
+title = "属性設定"
 icon = ":material/function:"
-url_path = "forecast"
+url_path = "axis"
 
 [[Data]]
-page = "modules/data/transactions.py"
-title = "過去実績"
+page = "modules/data/vsforecast.py"
+title = "予測/実績"
 icon = ":material/function:"
-url_path = "archive"
-
-[[Planning]]
-page = "modules/planning/bp.py"
-title = "年間計画"
-icon = ":material/edit:"
-url_path = "bp"
+url_path = "vsforecast"
 
 [[Planning]]
 page = "modules/planning/sales.py"
@@ -54,22 +36,16 @@ icon = ":material/edit:"
 url_path = "sales-plan"
 
 [[Planning]]
-page = "modules/planning/supply.py"
-title = "供給計画"
-icon = ":material/edit:"
-url_path = "supply-plan"
-
-[[Planning]]
 page = "modules/planning/proration.py"
 title = "調達計画"
 icon = ":material/edit:"
 url_path = "proration-plan"
 
 [[Planning]]
-page = "modules/planning/psi.py"
-title = "PSI計算"
-icon = ":material/function:"
-url_path = "psi"
+page = "modules/planning/supply.py"
+title = "供給計画"
+icon = ":material/edit:"
+url_path = "supply-plan"
 
 [[EventSupport]]
 page = "modules/top/contingency_plan.py"

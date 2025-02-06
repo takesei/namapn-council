@@ -25,6 +25,7 @@ time as(
 final as (
   select
     t.time_id,
+    s.version,
     l.location_code,
     l.location_name,
     p.plant_code,
@@ -36,7 +37,6 @@ final as (
     s.storage_unit_cost,
     l.longuitude,
     l.latitude,
-    s.version
   from stores as s
   left join plants as p on s.plant_code = p.plant_code
   left join locs as l on p.location_code = l.location_code
