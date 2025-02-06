@@ -26,6 +26,7 @@ final as (
     ty.transaction_type_name as transaction_type,
     t.storage_code,
     t.price,
+    t.quantity,
     t.version
   from tran as t
   left join type as ty on t.transaction_type_code = ty.transaction_type_code

@@ -25,6 +25,7 @@ time as(
 final as (
   select
     t.time_id,
+    s.version,
     l.location_code,
     l.location_name,
     p.plant_code,
