@@ -3,12 +3,12 @@ with
 type as (
   select
       *
-  from {{ source("transaction", "transaction_types") }}
+  from {{ source("transaction", "transaction_types_master") }}
 ),
 tran as (
   select
       *
-  from {{ source("transaction", "transactions") }}
+  from {{ source("transaction", "transactions_raw") }}
 ),
 time as(
   select 

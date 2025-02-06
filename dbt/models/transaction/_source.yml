@@ -2,5 +2,6 @@ sources:
   - name: transaction
     schema: master
     tables:
-      - name: transactions
-      - name: transaction_types
+      - name: transactions_raw
+      - name: transaction_types_master
+

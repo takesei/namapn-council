@@ -3,7 +3,7 @@ with
 final as (
   select
     *
-  from {{ source("master", "customers") }}
+  from {{ source("master", "customers_master") }}
 )
 
 select * from final

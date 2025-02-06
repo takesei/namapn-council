@@ -1,5 +1,3 @@
--- depends_on: {{ ref('finished_goods') }}
-
 with
 --- load
 fg as (
@@ -13,7 +11,7 @@ mat as (
 uitem as (
   select
     item_type,
-    finished_goods_code as re{{ source_code }}
+    finished_goods_code as resource_code
   from
     fg
 
@@ -21,7 +19,7 @@ uitem as (
 
   select
     item_type,
-    material_code as re{{ source_code }}
+    material_code as resource_code
   from
     mat
 ),

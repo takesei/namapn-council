@@ -3,17 +3,17 @@ with
 locs as (
   select
     *
-  from {{ source("master", "locations") }}
+  from {{ source("master", "locations_master") }}
 ),
 plants as (
   select
     *
-  from {{ source("master", "plants") }}
+  from {{ source("master", "plants_master") }}
 ),
 lines as (
   select
     *
-  from {{ source("master", "lines") }}
+  from {{ source("master", "lines_master") }}
 ),
 time as(
   select 

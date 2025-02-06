@@ -3,12 +3,12 @@ with
 fg as (
   select
     *
-  from {{ source("master", "finished_goods") }}
+  from {{ source("master", "finished_goods_master") }}
 ),
 type as (
   select
     *
-  from {{ source("master", "item_types") }}
+  from {{ source("master", "item_types_master") }}
 ),
 
 --- final

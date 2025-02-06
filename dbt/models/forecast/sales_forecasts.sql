@@ -1,7 +1,7 @@
 with
 --- load
 forecast as (
-  select * from {{ source("forecast", "sales_forecasts") }}
+  select * from {{ source("forecast", "sales_forecasts_raw") }}
 ),
 time as(
   select 

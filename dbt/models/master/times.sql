@@ -4,19 +4,19 @@ year as (
   select
     *
   from
-    {{ source("master", "years") }}
+    {{ source("master", "years_master") }}
 ),
 month as (
   select
     *
   from
-    {{ source("master", "months") }}
+    {{ source("master", "months_master") }}
 ),
 date as (
   select
     *
   from
-    {{ source("master", "dates") }}
+    {{ source("master", "dates_master") }}
 ),
 
 ---final

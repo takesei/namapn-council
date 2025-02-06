@@ -1,4 +1,4 @@
 version: 2
 
 seeds:
-  - name: transactions
+  - name: transactions_raw

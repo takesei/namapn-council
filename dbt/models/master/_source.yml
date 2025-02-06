@@ -2,29 +2,30 @@ sources:
   - name: master
     schema: master
     tables:
-      - name: bom_trees
-      - name: companies
-      - name: customers
-      - name: dates
-      - name: finished_goods
-      - name: item_types
-      - name: items
-      - name: lines
-      - name: locations
-      - name: materials
-      - name: months
-      - name: plants
-      - name: production_forecasts
-      - name: resource_forecasts
-      - name: retailers
-      - name: routing
-      - name: routing_forecasts
-      - name: routings
-      - name: sales_forecasts
-      - name: storages
-      - name: suppliers
-      - name: times
-      - name: transaction_types
-      - name: transactions
-      - name: versions
-      - name: years
+      - name: bom_trees_master
+      - name: companies_master
+      - name: customers_master
+      - name: dates_master
+      - name: finished_goods_master
+      - name: item_types_master
+      - name: items_master
+      - name: lines_master
+      - name: locations_master
+      - name: materials_master
+      - name: months_master
+      - name: plants_master
+      - name: production_forecasts_master
+      - name: resource_forecasts_master
+      - name: retailers_master
+      - name: routing_master
+      - name: routing_forecasts_master
+      - name: routings_master
+      - name: sales_forecasts_master
+      - name: storages_master
+      - name: suppliers_master
+      - name: times_master
+      - name: transaction_types_master
+      - name: transactions_master
+      - name: versions_master
+      - name: years_master
+

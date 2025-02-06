@@ -3,12 +3,12 @@ with
 mat as (
   select
     *
-  from {{ source("master", "materials") }}
+  from {{ source("master", "materials_master") }}
 ),
 type as (
   select
     *
-  from {{ source("master", "item_types") }}
+  from {{ source("master", "item_types_master") }}
 ),
 
 --- final
