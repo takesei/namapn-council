@@ -29,24 +29,11 @@ title = "予測/実績"
 icon = ":material/function:"
 url_path = "vsforecast"
 
-
-[[Planning]]
-page = "modules/planning/bp.py"
-title = "年間計画"
-icon = ":material/edit:"
-url_path = "bp"
-
 [[Planning]]
 page = "modules/planning/sales.py"
 title = "販売計画"
 icon = ":material/edit:"
 url_path = "sales-plan"
-
-[[Planning]]
-page = "modules/planning/supply.py"
-title = "供給計画"
-icon = ":material/edit:"
-url_path = "supply-plan"
 
 [[Planning]]
 page = "modules/planning/proration.py"
@@ -55,10 +42,10 @@ icon = ":material/edit:"
 url_path = "proration-plan"
 
 [[Planning]]
-page = "modules/planning/psi.py"
-title = "PSI計算"
-icon = ":material/function:"
-url_path = "psi"
+page = "modules/planning/supply.py"
+title = "供給計画"
+icon = ":material/edit:"
+url_path = "supply-plan"
 
 [[EventSupport]]
 page = "modules/top/contingency_plan.py"

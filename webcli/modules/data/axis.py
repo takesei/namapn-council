@@ -1,42 +1,8 @@
 import streamlit as st
 import pandas as pd
 
-schemas = dict(
-    item_axis=dict(
-        finished_goods=False,
-        item_types=False,
-        items=False,
-        materials=False,
-        bom_trees=False,
-    ),
-    customer_axis=dict(
-        customers=False,
-        retailers=False,
-        suppliers=False,
-    ),
-    company_axis=dict(
-        companies=False,
-    ),
-    plant_axis=dict(
-        lines=False,
-        locations=False,
-        plants=False,
-        storages=False,
-    ),
-    calender_axis=dict(
-        months=False,
-        dates=False,
-        times=False,
-        years=False,
-    ),
-    route_axis=dict(
-        routing_forecasts=False,
-        routings=False,
-    ),
-    version_axis=dict(
-        versions=False,
-    ),
-)
+
+schemas = st.session_state.db.schema["dimension"]
 
 
 def set_local(
@@ -63,28 +29,32 @@ else:
         c1, c2 = st.columns(2, border=True)
         with c1:
             v_ax = st.session_state.db.get("versions")
+            v_ax = v_ax[v_ax.is_active].sort_values("version_code")
+            tag = v_ax.version_code + ":" + v_ax.version_name
             version = st.pills(
-                "指定バージョン",
-                ["ALL", *v_ax[v_ax.is_active].version.unique()],
-                selection_mode="single",
-                default="ALL",
+                "指定バージョン", ["ALL", *tag], selection_mode="single", default="ALL"
             )
         with c2:
             tables = st.pills(
                 "マスタデータ(複数選択可)",
-                schemas[axis].keys(),
+                schemas[axis],
                 selection_mode="multi",
-                default=list(schemas[axis].keys())[0],
+                default=schemas[axis][0],
             )
         if version is None:
             st.info("version情報が選択されていません")
+            st.stop()
+
+        version = version.split(":")[0]
 
         if len(tables) > 0:
             for table in tables:
                 st.markdown(f"## {table}")
                 df = st.session_state.db.get(table)
                 cdf = st.data_editor(
-                    df if version == "ALL" else df[df.version == version],
+                    df[df.version == version]
+                    if "version" in df.columns and version != "ALL"
+                    else df,
                     hide_index=False,
                     use_container_width=True,
                 )

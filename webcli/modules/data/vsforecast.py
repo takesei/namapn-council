@@ -1,39 +1,37 @@
 import streamlit as st
+import pandas as pd
+
+forecast_tables = st.session_state.db.schema["forecast"]
+transaction_tables = st.session_state.db.schema["transaction"]
 
 
-pred_schemas = dict(
-    production_forecasts=False,
-    resource_forecasts=False,
-    routing_forecasts=False,
-    sales_forecasts=False,
+forecasts = st.segmented_control("AI予測", forecast_tables, selection_mode="multi")
+trans = st.segmented_control(
+    "実績",
+    ["transactions:Sales", "transactions:Purchase"],
+    selection_mode="multi",
 )
 
-tran_schemas = dict(
-    transaction_types=False,
-    transactions=False,
-)
+selections = forecasts + trans
 
-forecasts = st.segmented_control("AI予測", pred_schemas.keys(), selection_mode="multi")
-trans = st.segmented_control("実績", tran_schemas.keys(), selection_mode="multi")
-
-if len(forecasts) == 0 and len(trans) == 0:
+if len(selections) == 0:
     "# 情報未選択"
     "ここではAI予測結果や過去実績を分析します"
     st.info("上のボタンから対象となるAI予測情報を選択してください")
 else:
-    f"# {' vs '.join([f'`{v}`' for v in forecasts + trans])}"
+    f"# {' vs '.join([f'`{v}`' for v in selections])}"
     "ここではAI予測結果や過去実績を分析します"
 
     with st.spinner("データ取り込み中"):
         c1, c2 = st.columns(2, border=True)
         with c1:
             v_ax = st.session_state.db.get("versions")
+            v_ax = v_ax[v_ax.is_active].sort_values("version_code")
+            tag = v_ax.version_code + ":" + v_ax.version_name
             versions = st.pills(
-                "指定バージョン",
-                v_ax[v_ax.is_active].version.unique(),
-                selection_mode="multi",
-                default=v_ax.version.unique()[0],
+                "指定バージョン", tag, selection_mode="multi", default=tag.iloc[0]
             )
+            versions = [v.split(":")[0] for v in versions]
         with c2:
             viz = st.segmented_control(
                 "表示方法",
@@ -47,29 +45,67 @@ else:
 
         match viz:
             case "table":
-                for forecast in forecasts:
-                    df = st.session_state.db.get(forecast)
+                for table in selections:
+                    if table in ["transactions:Sales", "transactions:Purchase"]:
+                        df = st.session_state.db.get("transactions")
+                        table_type = table.split(":")[1]
+                        df = df[df.transaction_type == table_type]
+                    else:
+                        df = st.session_state.db.get(table)
                     for version in versions:
-                        f"## {forecast}[{version}]"
+                        f"## {table}[{version}]"
                         st.dataframe(
                             df[df.version == version], use_container_width=True
                         )
             case "line_chart":
-                chart = None
-                for forecast in forecasts:
-                    df = st.session_state.db.get(forecast)
-                    x_ax, y_ax = "", ""
-                    if "month" in df.columns:
-                        x_ax = "month"
-                    elif "date" in df.columns:
-                        x_ax = "date"
-                    if "quantity" in df.columns:
-                        y_ax = "quantity"
-                    elif "capacity" in df.columns:
-                        y_ax = "capacity"
-                    for version in versions:
-                        data = df.loc[df.version == version, [x_ax, y_ax]].set_index(x_ax)
-                        if chart is None:
-                            chart = st.line_chart(data)
-                        else:
-                            chart.add_rows(data)
+                charts = []
+                for table in selections:
+                    if table in ["transactions:Sales", "transactions:Purchase"]:
+                        df = st.session_state.db.get("transactions")
+                        table_type = table.split(":")[1]
+                        df = df[df.transaction_type == table_type]
+                    else:
+                        df = st.session_state.db.get(table)
+                    df = df.loc[
+                        df.version.isin(versions), ["time_id", "version", "quantity"]
+                    ]
+                    df.time_id = pd.to_datetime(df.time_id).dt.date
+                    data = (
+                        df.groupby(["time_id", "version"])
+                        .sum()
+                        .reset_index()
+                        .set_index("time_id")
+                    )
+                    data.version = table + "-" + data.version
+                    charts.append(data)
+                summary = pd.concat(charts, axis=0)
+                st.line_chart(summary, x=None, y="quantity", color="version")
+
+            case "bar_chart":
+                charts = []
+                for table in selections:
+                    if table in ["transactions:Sales", "transactions:Purchase"]:
+                        df = st.session_state.db.get("transactions")
+                        table_type = table.split(":")[1]
+                        df = df[df.transaction_type == table_type]
+                    else:
+                        df = st.session_state.db.get(table)
+                    df = df.loc[
+                        df.version.isin(versions), ["time_id", "version", "quantity"]
+                    ]
+                    df.time_id = pd.to_datetime(df.time_id).dt.strftime("%Y/%m/%d")
+                    data = (
+                        df.groupby(["time_id", "version"])
+                        .sum()
+                        .reset_index()
+                        .set_index("time_id")
+                    )
+                    data.version = table + "-" + data.version
+                    charts.append(data)
+                summary = pd.concat(charts, axis=0)
+                st.bar_chart(
+                    summary, x=None, y="quantity", color="version", stack=False
+                )
+
+            case _:
+                st.info("表示方法を選択してください")
