@@ -1,4 +1,5 @@
 import streamlit as st
+import re
 from libs.actions import run_action
 import pandas as pd
 
@@ -48,6 +49,12 @@ def start_session():
 #         start_session()
 #     st.stop()
 
+forecasts = dict(
+    sales_forecast=st.session_state.db.get("sales_forecasts"),
+    resource_forecast=st.session_state.db.get("resource_forecasts"),
+    routing_forecast=st.session_state.db.get("routing_forecasts"),
+)
+
 
 left, right = st.columns([0.6, 0.4], vertical_alignment="top")
 with right:
@@ -83,169 +90,113 @@ with right:
 with left:
     with st.container(border=True, height=800):
         with st.container(height=95):
-            c1, c2 = st.columns([3, 1])
-            with c1:
-                content = st.segmented_control(
-                    "**描画する資料を選んでください**",
-                    ["イベント情報", "対策情報　　"],
-                    default="イベント情報",
+            content = st.segmented_control(
+                "**描画する資料を選んでください**",
+                ["イベント情報", "影響予測　　", "対策情報　　"],
+                default="イベント情報",
+            )
+            if content is None:
+                content = "イベント情報"
+
+        report = st.container(height=650)
+
+with report:
+    match content:
+        case "イベント情報":
+            template = st.session_state.jinja.get_template("event.md")
+            rdr = template.render(st.session_state.agent["event"])
+            st.markdown(rdr)
+        case "対策情報　　":
+            template = st.session_state.jinja.get_template("strategy.md")
+            rdr = template.render(st.session_state.agent["model"].strategy)
+            st.markdown(rdr)
+        case "影響予測　　":
+            cont = st.session_state.agent["event"]
+            df = pd.DataFrame(cont["event_cases"]).set_index("version")
+            df.columns = cont["event_metrics"].values()
+            "##### 比較"
+            st.table(df.T)
+
+            field_forecast = st.container()
+            with field_forecast:
+                cat = st.selectbox("表示するForecastを選んでください", forecasts.keys())
+                c1, c2 = st.columns([3, 1])
+                c3, c4 = st.columns(2)
+                fcst = forecasts[cat]
+                col = [
+                    c
+                    for c in fcst.columns
+                    if c
+                    not in [
+                        "version",
+                        "quantity",
+                        "cost",
+                        "unit_cost",
+                    ]
+                ]
+                with c1:
+                    c = st.pills("セグメント分析", [c for c in col if c != "time_id"])
+                with c2:
+                    viz_table = st.toggle("表形式", value=False)
+                with c4:
+                    ax = [c for c in fcst.columns if c not in ["version", *col]]
+                    target = "quantity"
+                    if len(ax) > 1:
+                        target = st.pills("描画対象", ax, default="quantity")
+                        target = "quantity" if target is None else target
+                with c3:
+                    viz_version = st.pills(
+                        "比較するversion",
+                        ["original", *df.index.unique()],
+                        selection_mode="multi",
+                    )
+                    viz_version = (
+                        ["original", *df.index.unique()]
+                        if len(viz_version) == 0
+                        else viz_version
+                    )
+                    viz_version = re.compile("(" + "|".join(viz_version) + ")")
+
+                diff = (
+                    fcst[fcst.version == "V001"]
+                    .rename(columns={a: f"{a}_original" for a in ax})
+                    .drop(columns=["version"])
                 )
-                if content is None:
-                    content = "イベント情報"
-            with c2:
-                is_bi = st.toggle("BIモード", value=True)
+                evt = fcst[fcst.version.isin(df.index)]
+                for version in evt.version.unique():
+                    diff = pd.merge(
+                        diff,
+                        evt[evt.version == version]
+                        .rename(columns={a: f"{a}_{version}" for a in ax})
+                        .drop(columns=["version"]),
+                        left_on=col,
+                        right_on=col,
+                        how="outer",
+                    )
+                diff.time_id = pd.to_datetime(diff.time_id)
+                if c is None:
+                    diff = diff.groupby("time_id").sum().reset_index()
+                    diff["surrogate"] = "ALL"
+                else:
+                    diff = diff.groupby(["time_id", c]).sum().reset_index()
+                    diff["surrogate"] = diff.loc[:, c]
+                diff = diff.drop(columns=[c for c in col if c != "time_id"])
 
-        with st.container(height=650):
-            match content:
-                case "イベント情報":
-                    if is_bi:
-                        cont = st.session_state.agent["event"]
-                        refs = [
-                            f"  - [{ref}](https://google.com)"
-                            for ref in [
-                                *cont["past_incidents"],
-                                cont["related_manuals"],
-                                cont["real_time_info"],
-                            ]
-                        ]
-                        refs = ("\n  " + " " * 24) + ("\n  " + " " * 24).join(refs)
-                        f"""
-                        ### [{cont["version"]}版] {cont["incident_name"]}
-                        - 発行日: {cont["issue_date"]}
-                        - 深刻度: **{cont["severity"]}**
-                        - 発行者: {cont["responsible_person"]} ({cont["department"]})
-                        - 参考情報: {refs}
-                        """
-
-                        """
-                        #### 状況変化予測
-                        """
-                        st.dataframe(pd.DataFrame(cont["timeline"]), hide_index=True)
-
-                        "#### 影響予測"
-                        case = cont["impact_details"].keys()
-                        prob = cont["impact_probabilities"].values()
-                        detail = [", ".join(e) for e in cont["impact_details"].values()]
-                        proc = cont["affected_business_processes"].values()
-                        df = pd.DataFrame(
-                            [prob, detail, proc],
-                            columns=["V003", "V004"],
-                            index=["確率", "概要", "影響"],
-                        ).T
-
-                        forecasts = dict(
-                            sales=st.session_state.db.get("sales_forecasts"),
-                            resource=st.session_state.db.get("resource_forecasts"),
-                            routing=st.session_state.db.get("routing_forecasts"),
+                if viz_table:
+                    diff
+                else:
+                    df = []
+                    for a in diff.filter(like=f"{target}_").columns:
+                        temp = diff.loc[:, ["time_id", "surrogate", a]].rename(
+                            columns={a: target}
                         )
-
-                        for case, (version, row) in zip(case, df.iterrows()):
-                            with st.container(border=True):
-                                f"##### Case: {case} (version_id = {version})"
-                                row
-                                with st.expander("###### Forecastへの影響"):
-                                    for cat, fcst in forecasts.items():
-                                        col = [
-                                            c
-                                            for c in fcst.columns
-                                            if c
-                                            not in [
-                                                "version",
-                                                "quantity",
-                                                "cost",
-                                                "unit_cost",
-                                            ]
-                                        ]
-                                        ord = fcst[fcst.version == "V001"].drop(
-                                            columns=["version"]
-                                        )
-                                        evt = fcst[fcst.version == version].drop(
-                                            columns=["version"]
-                                        )
-                                        f"###### {cat} forecast"
-                                        diff = pd.merge(
-                                            ord,
-                                            evt,
-                                            left_on=col,
-                                            right_on=col,
-                                            how="outer",
-                                            suffixes=["_ordinal", "_event"],
-                                        )
-                                        diff.time_id = pd.to_datetime(diff.time_id)
-                                        col.remove("time_id")
-                                        c1, c2 = st.columns([3, 1])
-                                        with c1:
-                                            c = st.pills(
-                                                "集計する属性",
-                                                col,
-                                                key=f"event_bi_groupby_{cat}_{version}",
-                                            )
-                                        with c2:
-                                            viz_table = st.toggle(
-                                                "表形式",
-                                                value=False,
-                                                key=f"event_bi_viz_{cat}_{version}",
-                                            )
-
-                                        if c is None:
-                                            diff = (
-                                                diff.groupby("time_id")
-                                                .sum()
-                                                .reset_index()
-                                            )
-                                            diff["surrogate"] = "ALL"
-                                            diff = diff.drop(columns=col)
-                                        else:
-                                            diff = (
-                                                diff.groupby(["time_id", c])
-                                                .sum()
-                                                .reset_index()
-                                            )
-                                            diff["surrogate"] = diff.loc[:, c]
-                                            diff = diff.drop(columns=col)
-                                        if viz_table:
-                                            diff
-                                        else:
-                                            ax = [
-                                                c
-                                                for c in diff.columns
-                                                if c not in ["time_id", "surrogate"]
-                                            ]
-                                            target = "quantity"
-                                            if len(ax) > 2:
-                                                _ax = {a.split("_")[0] for a in ax}
-                                                target = st.pills(
-                                                    "描画対象",
-                                                    _ax,
-                                                    key=f"event_axis_viz_{cat}_{version}",
-                                                    default="quantity",
-                                                )
-                                                if target is None:
-                                                    target = "quantity"
-                                            df = []
-                                            for a in ax:
-                                                temp = diff.loc[
-                                                    :, ["time_id", "surrogate", a]
-                                                ].rename(columns={a: target})
-                                                temp.surrogate = (
-                                                    f"{a}_" + temp.surrogate
-                                                )
-                                                df.append(temp)
-                                            sample = pd.concat(df)
-                                            sample = sample[
-                                                sample.surrogate.str.startswith(target)
-                                            ]
-                                            st.line_chart(
-                                                sample,
-                                                x="time_id",
-                                                y=target,
-                                                color="surrogate",
-                                            )
-                    else:
-                        template = st.session_state.jinja.get_template("event.md")
-                        rdr = template.render(st.session_state.agent["event"])
-                        st.markdown(rdr)
-                case "対策情報　　":
-                    template = st.session_state.jinja.get_template("strategy.md")
-                    rdr = template.render(st.session_state.agent["model"].strategy)
-                    st.markdown(rdr)
+                        temp.surrogate = f"{a}_" + temp.surrogate
+                        df.append(temp)
+                    sample = pd.concat(df)
+                    sample = sample[sample.surrogate.str.contains(viz_version)]
+                    st.line_chart(
+                        sample,
+                        x="time_id",
+                        y=target,
+                        color="surrogate",
+                    )
