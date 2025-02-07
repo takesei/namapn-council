@@ -23,8 +23,29 @@ def load_navigation():
 @st.cache_resource
 def setup_aiagent():
     print("Create Gemiin Agent")
+    empty_scenario = {
+        "strategy_name": "",
+        "strategy_id": "",
+        "create_date": "",
+        "version": "",
+        "department": "",
+        "responsible_person": "",
+        "event": {"impact_level": "", "version": "", "name": "", "url": ""},
+        "activation": {
+            "responsible": "",
+            "time": "",
+            "conditions": "",
+            "metrics": [],
+            "notifications": [],
+        },
+        "initial_response": [],
+        "containment_measures": [],
+        "monitoring": [],
+        "recovery": [],
+    }
+
     return dict(
-        model=ScenarioMaker({}),
+        model=ScenarioMaker(empty_scenario),
         chat_history=[],
         event=None,
         status="deactive",

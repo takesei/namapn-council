@@ -3,6 +3,13 @@ import re
 from libs.actions import run_action
 import pandas as pd
 
+with st.spinner("Initialize"):
+    forecasts = dict(
+        sales_forecast=st.session_state.db.get("sales_forecasts"),
+        resource_forecast=st.session_state.db.get("resource_forecasts"),
+        routing_forecast=st.session_state.db.get("routing_forecasts"),
+    )
+
 
 @st.dialog("セッションを開始しますか?")
 def start_session():
@@ -20,11 +27,54 @@ def start_session():
     elif res:
         with st.status("情報取得中"):
             st.write("被害予測取得中")
-            impact = st.session_state.db.get("impact")
+            for cat, fcst in forecasts.items():
+                if f"diff_{cat}" not in st.session_state:
+                    col = [
+                        c
+                        for c in fcst.columns
+                        if c
+                        not in [
+                            "version",
+                            "quantity",
+                            "cost",
+                            "unit_cost",
+                        ]
+                    ]
+                    ax = [c for c in fcst.columns if c not in ["version", *col]]
+                    diff = (
+                        fcst[fcst.version == "V001"]
+                        .rename(columns={a: f"{a}_original" for a in ax})
+                        .drop(columns=["version"])
+                    )
+                    evt = fcst[
+                        fcst.version.isin(
+                            [
+                                v
+                                for v in fcst.version.unique()
+                                if v not in ["V001", "V002"]
+                            ]
+                        )
+                    ]
+                    for version in evt.version.unique():
+                        diff = pd.merge(
+                            diff,
+                            evt[evt.version == version]
+                            .rename(columns={a: f"{a}_{version}" for a in ax})
+                            .drop(columns=["version"]),
+                            left_on=col,
+                            right_on=col,
+                            how="outer",
+                        )
+                    diff.time_id = pd.to_datetime(diff.time_id)
+                    st.session_state[f"diff_{cat}"] = diff
+
             st.write("対策シナリオセッション準備中")
             prompt = f"""
-            イベントの詳細: {st.session_state.agent["event"]}
-            イベントの被害: {impact}
+            event_scenario: {st.session_state.agent["event"]}
+            eventの影響
+            1. sales: {st.session_state["diff_sales_forecast"]}
+            2. resource: {st.session_state["diff_resource_forecast"]}
+            3. routing: {st.session_state["diff_routing_forecast"]}
             ユーザーのinput: イベントが発生しました, 次に何をしたらいいか教えてください
             """
             response = st.session_state.agent["model"].send_message(prompt)
@@ -39,21 +89,15 @@ def start_session():
         st.info("待機します, ×ボタンから抜けてください")
 
 
-# if st.session_state.agent["event"] is None:
-#     st.info("重要なイベントはありません")
-#     st.stop()
-# if st.session_state.agent["status"] == "deactive":
-#     "# イベント対応"
-#     st.warning("**イベントを検知しました, 開始ボタンから状況を開始してください**")
-#     if st.button("状況を開始"):
-#         start_session()
-#     st.stop()
-
-forecasts = dict(
-    sales_forecast=st.session_state.db.get("sales_forecasts"),
-    resource_forecast=st.session_state.db.get("resource_forecasts"),
-    routing_forecast=st.session_state.db.get("routing_forecasts"),
-)
+if st.session_state.agent["event"] is None:
+    st.info("重要なイベントはありません")
+    st.stop()
+if st.session_state.agent["status"] == "deactive":
+    "# イベント対応"
+    st.warning("**イベントを検知しました, 開始ボタンから状況を開始してください**")
+    if st.button("状況を開始"):
+        start_session()
+    st.stop()
 
 
 left, right = st.columns([0.6, 0.4], vertical_alignment="top")
@@ -120,12 +164,9 @@ with report:
             field_forecast = st.container()
             with field_forecast:
                 cat = st.selectbox("表示するForecastを選んでください", forecasts.keys())
-                c1, c2 = st.columns([3, 1])
-                c3, c4 = st.columns(2)
-                fcst = forecasts[cat]
                 col = [
                     c
-                    for c in fcst.columns
+                    for c in forecasts[cat].columns
                     if c
                     not in [
                         "version",
@@ -134,12 +175,16 @@ with report:
                         "unit_cost",
                     ]
                 ]
+                c1, c2 = st.columns([3, 1])
+                c3, c4 = st.columns(2)
                 with c1:
                     c = st.pills("セグメント分析", [c for c in col if c != "time_id"])
                 with c2:
                     viz_table = st.toggle("表形式", value=False)
                 with c4:
-                    ax = [c for c in fcst.columns if c not in ["version", *col]]
+                    ax = [
+                        c for c in forecasts[cat].columns if c not in ["version", *col]
+                    ]
                     target = "quantity"
                     if len(ax) > 1:
                         target = st.pills("描画対象", ax, default="quantity")
@@ -157,23 +202,8 @@ with report:
                     )
                     viz_version = re.compile("(" + "|".join(viz_version) + ")")
 
-                diff = (
-                    fcst[fcst.version == "V001"]
-                    .rename(columns={a: f"{a}_original" for a in ax})
-                    .drop(columns=["version"])
-                )
-                evt = fcst[fcst.version.isin(df.index)]
-                for version in evt.version.unique():
-                    diff = pd.merge(
-                        diff,
-                        evt[evt.version == version]
-                        .rename(columns={a: f"{a}_{version}" for a in ax})
-                        .drop(columns=["version"]),
-                        left_on=col,
-                        right_on=col,
-                        how="outer",
-                    )
-                diff.time_id = pd.to_datetime(diff.time_id)
+                diff = st.session_state[f"diff_{cat}"]
+
                 if c is None:
                     diff = diff.groupby("time_id").sum().reset_index()
                     diff["surrogate"] = "ALL"
