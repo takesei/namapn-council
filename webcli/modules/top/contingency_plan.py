@@ -153,6 +153,7 @@ with left:
                                                 "version",
                                                 "quantity",
                                                 "cost",
+                                                "unit_cost",
                                             ]
                                         ]
                                         ord = fcst[fcst.version == "V001"].drop(
@@ -205,14 +206,39 @@ with left:
                                         if viz_table:
                                             diff
                                         else:
+                                            ax = [
+                                                c
+                                                for c in diff.columns
+                                                if c not in ["time_id", "surrogate"]
+                                            ]
+                                            target = "quantity"
+                                            if len(ax) > 2:
+                                                _ax = {a.split("_")[0] for a in ax}
+                                                target = st.pills(
+                                                    "描画対象",
+                                                    _ax,
+                                                    key=f"event_axis_viz_{cat}_{version}",
+                                                    default="quantity",
+                                                )
+                                                if target is None:
+                                                    target = "quantity"
+                                            df = []
+                                            for a in ax:
+                                                temp = diff.loc[
+                                                    :, ["time_id", "surrogate", a]
+                                                ].rename(columns={a: target})
+                                                temp.surrogate = (
+                                                    f"{a}_" + temp.surrogate
+                                                )
+                                                df.append(temp)
+                                            sample = pd.concat(df)
+                                            sample = sample[
+                                                sample.surrogate.str.startswith(target)
+                                            ]
                                             st.line_chart(
-                                                diff,
+                                                sample,
                                                 x="time_id",
-                                                y=[
-                                                    c
-                                                    for c in diff.columns
-                                                    if c not in ["surrogate", *col]
-                                                ],
+                                                y=target,
                                                 color="surrogate",
                                             )
                     else:
