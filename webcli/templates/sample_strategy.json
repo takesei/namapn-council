@@ -1,0 +1,91 @@
+{
+  "strategy_name": "関西シナリオ（調達影響）",
+  "strategy_id": "20250914_Kansai_Supply",
+  "create_date": "2025-09-12T10:00:00Z",
+  "version": "V1.1",
+  "department": "経営企画部",
+  "responsible_person": "財前悠一",
+  "event": {
+    "impact_level": "重大",
+    "version": "V1.3",
+    "name": "台風15号直撃の可能性",
+    "url": "https://example.com/incident-20250914"
+  },
+  "activation": {
+    "responsible": "経営企画部",
+    "time": "09/13 深夜",
+    "conditions": "台風が関西圏に直撃し、物流・調達に影響を及ぼす場合に発動",
+    "metrics": ["物流停止時間", "影響を受けるサプライヤー数"],
+    "notifications": ["調達部", "物流部", "製造部", "営業部"]
+  },
+  "policies": [
+    "調達計画の影響最小化",
+    "物流停止時の代替輸送手段の確保",
+    "関係者への迅速な通知と調整"
+  ],
+  "initial_response": [
+    {
+      "name": "リアルタイム監視",
+      "responsible": "調達部",
+      "details": "物流・天候の影響を監視し、緊急アラート発信",
+      "risk": "物流停止の見落としによる対応遅延",
+      "recovery_action": "物流網の迂回ルートを即時確保し、代替輸送手段を検討"
+    },
+    {
+      "name": "倉庫の在庫確認",
+      "responsible": "調達部",
+      "details": "関西倉庫の在庫を緊急チェックし、影響範囲を特定",
+      "risk": "在庫不足による生産ライン停止",
+      "recovery_action": "関東・九州の倉庫からの補充を調整し、優先供給先を決定"
+    }
+  ],
+  "containment_measures": [
+    {
+      "name": "サプライヤーとの調達交渉",
+      "responsible": "経営企画部",
+      "details": "追加調達および代替品の確保",
+      "risk": "調達遅延による生産影響",
+      "recovery_action": "代替サプライヤーの即時手配と契約交渉の加速"
+    },
+    {
+      "name": "代替輸送ルートの確保",
+      "responsible": "物流部",
+      "details": "関東・九州の調達先に供給可能性を確認",
+      "risk": "輸送手段の確保失敗による物流遅延",
+      "recovery_action": "航空輸送や緊急チャーター便の手配"
+    }
+  ],
+  "monitoring": [
+    {
+      "name": "調達・物流状況の監視",
+      "responsible": "調達部",
+      "details": "物流回復までの在庫管理を継続",
+      "risk": "在庫切れによる供給不足",
+      "recovery_action": "需要予測を基に優先供給先を再評価し、追加発注を検討"
+    }
+  ],
+  "recovery": [
+    {
+      "name": "通常調達プロセスへの移行",
+      "responsible": "調達部",
+      "details": "物流回復後、通常の調達へ戻す",
+      "risk": "不完全な復旧による長期的な影響",
+      "recovery_action": "段階的な通常運用への移行計画を策定し、影響分析を実施"
+    }
+  ],
+  "references": [
+    {
+      "name": "2023年 台風12号の影響分析",
+      "url": "https://example.com/typhoon-2023"
+    },
+    {
+      "name": "事業継続計画（BCP）ガイドライン",
+      "url": "https://example.com/bcp-guidelines"
+    },
+    {
+      "name": "台風対応マニュアル v2.1",
+      "url": "https://google.com"
+    }
+  ]
+}
+

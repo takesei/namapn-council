@@ -1,101 +1,69 @@
-# 📌 戦略シナリオ: {{ scenario_name | default("**未設定**") }}
+## {{ strategy_name }} 対策
+- **ID:** `{{ strategy_id }}`
+- **作成日:** {{ create_date }} (version {{ version }})
+- **担当部門:** `{{ department }}` (責任者: `{{ responsible_person }}` )
+- **対応イベント**: [\[`{{ event.impact_level }}`\] {{ event.name }}(`{{ event.version }}`)]({{ event.url }})
 
-## 1. シナリオ名 / ID / 適用条件
-- **シナリオ名:** {{ scenario_name | default("**未設定**") }}
-- **ID:** {{ scenario_id | default("**未設定**") }}
-- **適用条件:** {{ conditions | default("**未設定**") }}
-- **深刻度:** {{ severity | default("**未設定**") }}
+### 起動条件
+- **担当:** `{{ activation.responsible }}`
+- **通知対象:** {% for target in activation.notifications %} `{{ target }}` {% endfor %}  
+- **判断方法**
+  - 概要: {{ activation.conditions }}
+  - 時期: {{ activation.time }}
+  - 基準:
+{% for metric in activation.metrics %}
+    - {{ metric }}
+{% endfor %}
 
-## 2. 目的
-{% if objectives %}
-  {% for objective in objectives %}
-  - **{{ objective }}**
-  {% endfor %}
-{% else %}
-  - **未設定**
+
+### 対策方針
+{% for policy in policies %}
+- **{{ policy }}**
+{% endfor %}
+
+### 対応手順
+#### (1) 初動対応
+{% if not initial_response %}
+`ここでは今後の対策活動を円滑に実施するための準備を行います.`
 {% endif %}
+| 名称 | 担当 | 内容 | リスク | リスク対応 |
+| ---- | ---- | ---- | ------ | ---------- |
+{% for action in initial_response %}
+|**{{ action.name }}**| `{{ action.responsible }}` | {{ action.details }} | {{ action.risk }} | {{ action.recovery_action }} |
+{% endfor %}
 
-## 3. 手順・フロー
-
-### (1) アクティベーション（発動）
-{% if activation %}
-- **責任者:** {{ activation.responsible | default("**未設定**") }}
-- **判断基準:** {{ activation.criteria | default("**未設定**") }}
-- **通知:** {{ activation.notifications | join(", ") | default("**未設定**") }}
-{% else %}
-  - **未設定**
+#### (2) 一時対策
+{% if not containment_measures %}
+`ここでは被害の拡大を最小限に止めるための活動を実施します.`
 {% endif %}
+| 名称 | 担当 | 内容 | リスク | リスク対応 |
+| ---- | ---- | ---- | ------ | ---------- |
+{% for action in containment_measures %}
+|**{{ action.name }}**| `{{ action.responsible }}` | {{ action.details }} | {{ action.risk }} | {{ action.recovery_action }} |
+{% endfor %}
 
-### (2) 初動対応 (0〜30分)
-{% if initial_response %}
-  {% for action in initial_response %}
-- **{{ action.name | default("**未設定**") }}**  
-  - **担当:** {{ action.responsible | default("**未設定**") }}  
-  - **内容:** {{ action.details | default("**未設定**") }}
-  {% endfor %}
-{% else %}
-  - **未設定**
+#### (3) 維持
+{% if not monitoring %}
+`ここでは状況の解決のために, 状態を安定化させるための仕事に取り組みます.`
 {% endif %}
+{% for action in monitoring %}
+| 名称 | 担当 | 内容 | リスク | リスク対応 |
+| ---- | ---- | ---- | ------ | ---------- |
+|**{{ action.name }}**| `{{ action.responsible }}` | {{ action.details }} | {{ action.risk }} | {{ action.recovery_action }} |
+{% endfor %}
 
-### (3) 封じ込め・一時対策 (30分〜数時間)
-{% if containment_measures %}
-  {% for action in containment_measures %}
-- **{{ action.name | default("**未設定**") }}**  
-  - **担当:** {{ action.responsible | default("**未設定**") }}  
-  - **内容:** {{ action.details | default("**未設定**") }}
-  {% endfor %}
-{% else %}
-  - **未設定**
+#### (4) 復旧プロセス
+{% if not recovery %}
+`ここでは, 具体的な復旧を実施することで, 最終的な解決を目指します.`
 {% endif %}
+| 名称 | 担当 | 内容 | リスク | リスク対応 |
+| ---- | ---- | ---- | ------ | ---------- |
+{% for action in recovery %}
+|**{{ action.name }}**| `{{ action.responsible }}` | {{ action.details }} | {{ action.risk }} | {{ action.recovery_action }} |
+{% endfor %}
 
-### (4) 維持・モニタリング (数時間〜収束まで)
-{% if monitoring %}
-  {% for action in monitoring %}
-- **{{ action.name | default("**未設定**") }}**  
-  - **担当:** {{ action.responsible | default("**未設定**") }}  
-  - **内容:** {{ action.details | default("**未設定**") }}
-  {% endfor %}
-{% else %}
-  - **未設定**
-{% endif %}
-
-### (5) 復旧プロセス・フォローアップ
-{% if recovery %}
-  {% for action in recovery %}
-- **{{ action.name | default("**未設定**") }}**  
-  - **担当:** {{ action.responsible | default("**未設定**") }}  
-  - **内容:** {{ action.details | default("**未設定**") }}
-  {% endfor %}
-{% else %}
-  - **未設定**
-{% endif %}
-
-## 4. リスクと分岐（他シナリオへの切り替え）
-{% if risks_and_alternatives %}
-  {% for risk in risks_and_alternatives %}
-- **{{ risk.scenario | default("**未設定**") }}:** {{ risk.details | default("**未設定**") }}
-  {% endfor %}
-{% else %}
-  - **未設定**
-{% endif %}
-
-## 5. コミュニケーション計画
-{% if communication_plan %}
-  {% for plan in communication_plan %}
-- **{{ plan.target | default("**未設定**") }}:**  
-  - **担当:** {{ plan.responsible | default("**未設定**") }}  
-  - **内容:** {{ plan.details | default("**未設定**") }}
-  {% endfor %}
-{% else %}
-  - **未設定**
-{% endif %}
-
-## 6. 関連リンク・詳細資料
-- **インシデントシナリオ:** {{ related_incident | default("**未設定**") }}
-{% if additional_references %}
-  {% for reference in additional_references %}
-- **{{ reference.name | default("**未設定**") }}:** {{ reference.link | default("**未設定**") }}
-  {% endfor %}
-{% else %}
-  - **未設定**
-{% endif %}
+### 参考資料
+- **イベントシナリオ**: [{{ event.name }}](event.url)
+{% for ref in references %}
+- [{{ ref.name }}]({{ ref.url }})
+{% endfor %}
