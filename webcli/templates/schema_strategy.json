@@ -1,5 +1,4 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "イベント対応対策シナリオ",
   "description": "企業が特定のイベントに対応するために策定する対策シナリオのデータ構造",
   "type": "object",
@@ -8,63 +7,38 @@
       "type": "string",
       "title": "対策シナリオ名",
       "description": "対策シナリオの名称を指定する",
-      "examples": [
-        "関西シナリオ（調達影響）",
-        "九州シナリオ（販売影響）",
-        "東京シナリオ（生産影響）",
-        "物流停止対策",
-        "サプライチェーン維持対策"
-      ]
+      "examples": ["関西シナリオ（調達影響）", "九州シナリオ（販売影響）", "東京シナリオ（生産影響）", "物流停止対策", "サプライチェーン維持対策"]
     },
     "strategy_id": {
       "type": "string",
       "title": "対策ID",
       "description": "一意の識別子を指定する",
-      "examples": [
-        "20250914_Kansai_Supply",
-        "20250914_Kyushu_Retail",
-        "20250914_Tokyo_Manufacturing",
-        "YYYYMMDD_Location_Impact"
-      ]
+      "examples": ["20250914_Kansai_Supply", "20250914_Kyushu_Retail", "20250914_Tokyo_Manufacturing", "YYYYMMDD_Location_Impact"]
     },
     "create_date": {
       "type": "string",
       "format": "date-time",
       "title": "作成日時",
       "description": "対策シナリオが作成された日時。ISO 8601形式で記載する",
-      "examples": [
-        "2025-09-12T10:00:00Z"
-      ]
+      "examples": ["2025-09-12T10:00:00Z"]
     },
     "version": {
       "type": "string",
       "title": "バージョン",
       "description": "対策シナリオのバージョン管理。変更が加えられた際に更新する",
-      "examples": [
-        "V1.0",
-        "V1.1",
-        "V2.0"
-      ]
+      "examples": ["V1.0", "V1.1", "V2.0"]
     },
     "department": {
       "type": "string",
       "title": "担当部署",
       "description": "この対策シナリオを管理する部署",
-      "examples": [
-        "経営企画部",
-        "危機管理部",
-        "調達部"
-      ]
+      "examples": ["経営企画部", "危機管理部", "調達部"]
     },
     "responsible_person": {
       "type": "string",
       "title": "責任者",
       "description": "この対策シナリオの責任者の氏名",
-      "examples": [
-        "財前悠一",
-        "田中一郎",
-        "佐藤三郎"
-      ]
+      "examples": ["財前悠一", "田中一郎", "佐藤三郎"]
     },
     "event": {
       "type": "object",
@@ -73,11 +47,7 @@
       "properties": {
         "impact_level": {
           "type": "string",
-          "enum": [
-            "軽度",
-            "中度",
-            "重大"
-          ],
+          "enum": ["軽度", "中度", "重大"],
           "title": "影響度",
           "description": "イベントの影響度, 与えられるevent情報から直ちに埋めることができる."
         },
@@ -85,20 +55,13 @@
           "type": "string",
           "title": "イベント情報のバージョン",
           "description": "関連するイベント情報のバージョン管理, 与えられるevent情報から直ちに埋めることができる.",
-          "examples": [
-            "V1.2",
-            "V1.3"
-          ]
+          "examples": ["V1.2", "V1.3"]
         },
         "name": {
           "type": "string",
           "title": "イベント名",
           "description": "発生したイベントの名称, 与えられるevent情報から直ちに埋めることができる.",
-          "examples": [
-            "台風15号直撃の可能性",
-            "大規模地震発生",
-            "サイバー攻撃の兆候"
-          ]
+          "examples": ["台風15号直撃の可能性", "大規模地震発生", "サイバー攻撃の兆候"]
         },
         "url": {
           "type": "string",
@@ -112,21 +75,20 @@
       "type": "object",
       "title": "発動条件",
       "description": "対策シナリオを発動する条件, 初期に通知する人間の選択を実施する",
+      "properties": {
+        "responsible": {"type": "string", "description": "発動を判定する部門"},
+        "time": {"type": "string", "format": "date-time", "発動を判定する部門": "判断をする日時"},
+        "conditions": {"type": "string", "description": "何を持って判断をするかの説明"},
+        "metrics": {"type": "array", "items": {"type": "string"}, "description": "判断を手助けする指標の情報"},
+        "notifications": {"type": "array", "items": {"type": "string"}, "description": "発動された時に最初に情報が伝わる部署の情報"}
+      },
       "examples": [
         {
           "responsible": "経営企画部",
           "time": "09/13 深夜",
           "conditions": "台風が関西圏に直撃し、物流・調達に影響を及ぼす場合",
-          "metrics": [
-            "物流停止時間",
-            "影響を受けるサプライヤー数"
-          ],
-          "notifications": [
-            "調達部",
-            "物流部",
-            "製造部",
-            "営業部"
-          ]
+          "metrics": ["物流停止時間", "影響を受けるサプライヤー数"],
+          "notifications": ["調達部", "物流部", "製造部", "営業部"]
         }
       ]
     },
@@ -251,26 +213,11 @@
       "items": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string",
-            "description": "復旧アクションの名称"
-          },
-          "responsible": {
-            "type": "string",
-            "description": "対応責任部門"
-          },
-          "details": {
-            "type": "string",
-            "description": "復旧作業の具体的な内容"
-          },
-          "risk": {
-            "type": "string",
-            "description": "復旧遅延や問題発生時のリスク"
-          },
-          "recovery_action": {
-            "type": "string",
-            "description": "復旧プロセスを円滑に進めるための対応策"
-          }
+          "name": {"type": "string", "description": "復旧アクションの名称"},
+          "responsible": {"type": "string", "description": "対応責任部門"},
+          "details": {"type": "string", "description": "復旧作業の具体的な内容"},
+          "risk": {"type": "string", "description": "復旧遅延や問題発生時のリスク"},
+          "recovery_action": {"type": "string", "description": "復旧プロセスを円滑に進めるための対応策"}
         }
       },
       "examples": [
@@ -298,18 +245,5 @@
       ]
     }
   },
-  "required": [
-    "strategy_name",
-    "strategy_id",
-    "create_date",
-    "version",
-    "department",
-    "responsible_person",
-    "event",
-    "activation",
-    "initial_response",
-    "containment_measures",
-    "monitoring",
-    "recovery"
-  ]
+  "required": ["strategy_name", "strategy_id", "create_date", "version", "department", "responsible_person", "event", "activation", "initial_response", "containment_measures", "monitoring", "recovery"]
 }

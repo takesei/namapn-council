@@ -1,5 +1,4 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "イベントシナリオ",
   "description": "企業が特定のイベントに対応するために策定するシナリオのデータ構造",
   "type": "object",
@@ -78,6 +77,12 @@
       "title": "イベントの詳細",
       "description": "イベントが発展した場合の, 複数の可能性をケースとして定義する",
       "properties": {
+        "version": {
+          "type": "string",
+          "title": "ケースバージョン",
+          "description": "ケースごとのForecast情報を指すデータバージョン. イベントのバージョンとは別なことに注意",
+          "examples": ["V003", "V004"]
+        },
         "name": {
           "type": "string",
           "title": "バージョンの名称",
