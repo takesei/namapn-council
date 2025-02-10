@@ -14,12 +14,14 @@ def run_action(infos: list[dict[str, Any]]):
                     data=pd.read_json(StringIO(input["source"])),
                     x=input["x"],
                     y=input["y"],
+                    color=input["color"] if "color" in input else None,
                 )
             elif input["plot_type"] == "bar":
                 st.bar_chart(
                     data=pd.read_json(StringIO(input["source"])),
                     x=input["x"],
                     y=input["y"],
+                    color=input["color"] if "color" in input else None,
                 )
             else:
                 return None

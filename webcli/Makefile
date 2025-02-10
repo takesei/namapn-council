@@ -1,4 +1,4 @@
-version = "0.0.2"
+version = "0.0.4"
 project = "velvety-outcome-448307-f0"
 port = 8080
 

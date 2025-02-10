@@ -1,5 +1,3 @@
-import streamlit as st
-
 """
 # データ分析/設定ページ
 
