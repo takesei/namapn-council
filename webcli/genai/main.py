@@ -163,8 +163,8 @@ class ScenarioMaker(GeminiAgent):
 
     def get_info(self, prompt: str) -> ScenarioMakerResponse:
         """
-        任意のタイミングで実行できる, データベースへアクセスして情報を取得する関数
-        ユーザーからデータに関する質問を受けた場合に選択する。
+        任意のタイミングで実行できる, データベース(BigQuery)へアクセスして情報を取得する関数
+        ユーザーからデータに関する質問を受けた場合に積極的に選択する。
         プロンプトを元に、text-to-SQLを実行し, 生成されたクエリに対応するデータを取得する
         データを調べる必要があるようなものがあったときにはこれを適用する。
 
@@ -180,7 +180,9 @@ class ScenarioMaker(GeminiAgent):
         print("===RUN TXT2BQ===")
         query = self.run_worker_agent("txt2sql", prompt)
         dataframe_json = F.run_bq_query(query["query"])
-        info = self.run_worker_agent("interpreter", dataframe_json)
+        info = self.run_worker_agent(
+            "interpreter", f"dataframe: {dataframe_json}\nprompt: {prompt}"
+        )
 
         x = info["x"] if info["x"] != "NULL" else None
         y = info["y"] if info["y"] != "NULL" else None

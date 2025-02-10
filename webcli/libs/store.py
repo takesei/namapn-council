@@ -33,7 +33,6 @@ class DataCatalog:
             + schema["forecast"]
             + schema["transaction"]
         )
-        print(self.mart_list)
         self.conn = duckdb.connect(database=db)
         self.local_table = []
 
