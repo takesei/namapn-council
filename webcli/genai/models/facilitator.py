@@ -33,7 +33,7 @@ response_schema = {
         },
         "strategy_scenario": {
             "title": "イベント対応対策シナリオ",
-            "description": "Agendaが[対策シナリオの作成]でかつ, 対策シナリオの内容を変更する場合に記載する. 対策シナリオの変更点に関する情報を記述する",
+            "description": "Agendaが[対策シナリオの作成]でかつ, 対策シナリオの変数が確定した場合に記載する. 対策シナリオの変更点に関する情報を記述する",
             "type": "array",
             "items": {
                 "type": "object",
@@ -46,7 +46,7 @@ response_schema = {
                     "content": {
                         "type": "string",
                         "title": "対策シナリオスキームの変数の値",
-                        "description": "対策シナリオで変更する変数の値を記載する, 必ずjsonのスキーマの型に沿って設定をすること",
+                        "description": "対策シナリオで変更する変数の値を記載する, 必ず対策シナリオスキーマの型に沿って設定をすること",
                     },
                 },
                 "required": ["name", "content"],

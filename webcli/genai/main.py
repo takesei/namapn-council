@@ -91,10 +91,12 @@ class ScenarioMaker(GeminiAgent):
         print("===FACILITATION===")
         response = self.chat_session.send_message(prompt, stream=False)
         result = json.loads(response.text)
-        self.last_message = "\n  ".join(
+        self.last_message = "  \n".join(
             [
-                f"Agenda: **[{result['current_topic']}]**",
-                f"ステップ: **[{result['current_step']}]**",
+                f"Agenda: **{result['current_topic']}**",
+                f"ステップ: **{result['current_step']}**"
+                if result["current_step"] != ""
+                else "",
                 result["msg"],
             ]
         )

@@ -84,7 +84,8 @@ def provision_data():
         1. sales: {st.session_state["diff_sales_forecast"]}
         2. resource: {st.session_state["diff_resource_forecast"]}
         3. routing: {st.session_state["diff_routing_forecast"]}
-        ユーザーのinput: イベントが発生しました, 概要を説明してください.
+        ユーザーのinput: イベントの概要を説明することを明示した上で3行程度で概要を説明してください.
+        また次に何をしたらいいか教えてください
         """
         response = st.session_state.agent["model"].send_message(prompt)
         st.session_state.agent["chat_history"].append(
