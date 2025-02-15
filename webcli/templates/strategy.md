@@ -1,6 +1,6 @@
 ## {{ strategy_name }} 対策
 - **ID:** `{{ strategy_id }}`
-- **作成日:** {{ create_date }} (version {{ version }})
+- **発行日:** {{ issue_date }} (version {{ version }})
 - **担当部門:** `{{ department }}` (責任者: `{{ responsible_person }}` )
 - **対応イベント**: [\[`{{ event.impact_level }}`\] {{ event.name }}(`{{ event.version }}`)]({{ event.url }})
 

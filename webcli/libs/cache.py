@@ -1,10 +1,11 @@
+from importlib import resources
+
 import streamlit as st
 import tomllib
-from jinja2 import Environment, FileSystemLoader
 import yaml
+from jinja2 import Environment, FileSystemLoader
 
-from genai import ScenarioMaker
-
+from libs.genai import StrategyMaker
 from libs.store import DataCatalog
 
 
@@ -45,7 +46,7 @@ def setup_aiagent():
     }
 
     return dict(
-        model=ScenarioMaker(empty_scenario),
+        model=StrategyMaker(),
         chat_history=[],
         event=None,
         status="deactive",
@@ -62,7 +63,8 @@ def set_template(path: str):
 @st.cache_resource
 def get_data_catalog(db: str):
     print("Create DB Session")
-    with open("libs/tables/schema.yml", "r") as f:
+    file_path = resources.files("libs.tables").joinpath("schema.yml")
+    with file_path.open("r", encoding="utf-8") as f:
         schema = yaml.safe_load(f)["mart"]
     catalog = DataCatalog(db, schema)
 
