@@ -37,7 +37,7 @@ def send_agent_prompt(model: AgentModel, prompt: str) -> Message:
     cont = Message(
         actor="assistant",
         message=resp.message,
-        attachments=resp.actions,
+        attachments=resp.attachments,
     )
     return cont
 
@@ -45,7 +45,7 @@ def send_agent_prompt(model: AgentModel, prompt: str) -> Message:
 def render_chat_history(chat_history: list[Message]) -> None:
     for msg in chat_history:
         with st.chat_message(msg.actor):
-            msg.message  # magic cmd
+            st.markdown(msg.message)  # magic cmd
             for a in msg.attachments:
                 run_action(a)
 
@@ -62,11 +62,11 @@ def render_prompt_area(chat_history_container: "st.container", chat_history) -> 
                 try:
                     resp = st.session_state.agent["model"].send_message(prompt)
                     st.write(resp.message)
-                    run_action(resp.actions)
+                    run_action(resp.attachments)
                     cont = Message(
                         actor="assistant",
                         message=resp.message,
-                        attachments=resp.actions,
+                        attachments=resp.attachments,
                     )
                 except Exception as e:
                     st.error(e)

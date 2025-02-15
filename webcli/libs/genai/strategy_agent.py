@@ -7,6 +7,7 @@ from vertexai.generative_models import (
 )
 
 import uuid
+import json
 import datetime
 from libs import functions as F
 from .agent import AgentResponse
@@ -47,6 +48,8 @@ class StrategyMaker:
             department="YourDepartment",
             responsible_person="You",
         )
+        self.last_message = "No previous message"
+        self.chat_session = None
 
     def get_process_id(self, prompt) -> AgentResponse[ProcessCaller]:
         """
@@ -89,7 +92,7 @@ class StrategyMaker:
 
         print("===FACILITATION===")
         response = self.chat_session.send_message(prompt, stream=False)
-        result = response.parsed
+        result = json.loads(response.text)
         self.last_message = "  \n".join(
             [
                 f"Agenda: **{result['current_topic']}**",
@@ -110,8 +113,7 @@ class StrategyMaker:
         print("===DONE===")
         return AgentResponse(
             message=self.last_message,
-            strategy=self.strategy,
-            actions=[],
+            attachments=[self.strategy],
         )
 
     def _update_strategy_scenario(self, diff_scneario: list[JSON]) -> None:
@@ -153,8 +155,7 @@ class StrategyMaker:
         print("===DATALOAD(DUMMY)===")
         result = AgentResponse(
             message="(Sample) データロードが完了しました。状況が変わった時に通知します。",
-            strategy=self.strategy,
-            actions=None,
+            attachments=None,
         )
         self.last_message = result.message
         print("===DONE===")
@@ -191,18 +192,15 @@ class StrategyMaker:
         print("===DONE===")
         return AgentResponse(
             message=self.last_message,
-            strategy=self.strategy,
-            actions=[
-                ProcessCaller(
-                    "plot",
-                    dict(source=dataframe_json, plot_type=info["plot_type"], x=x, y=y),
-                )
-            ],
+            attachments=ProcessCaller(
+                "plot",
+                dict(source=dataframe_json, plot_type=info["plot_type"], x=x, y=y),
+            ),
         )
 
     def _generate_prompt(self, user_input: str) -> str:
         return f"""
-        現在のStrategyシナリオ: {self.strategy.to_json()}
+        現在のStrategyシナリオ: {self.strategy.to_dict()}
         1つ前のLLMの発言: {self.last_message}
         ユーザーの入力: {user_input}
         """
@@ -213,7 +211,7 @@ class StrategyMaker:
     ) -> AgentResponse[ProcessCaller | StrategyScenario | None]:
         prompt = f"""
         現在のStrategyシナリオ:,
-        {self.strategy.to_json()},
+        {self.strategy.to_dict()},
         1つ前のLLMの発言:,
         {self.last_message},
         ユーザーの入力:,

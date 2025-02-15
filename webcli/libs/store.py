@@ -34,7 +34,10 @@ class DataCatalog:
             + schema["transaction"]
         )
         self.conn = duckdb.connect(database=db)
+
+        tables = self.conn.execute("SHOW TABLES").fetchall()
         self.local_table = []
+        self.local_table = [table[0] for table in tables]
 
     def get(self, table: str) -> pd.DataFrame:
         # TODO: Temporary implement
