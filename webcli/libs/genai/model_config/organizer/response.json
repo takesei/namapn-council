@@ -1,0 +1,8 @@
+{
+    "type": "object",
+    "properties": {
+        "process_id": {"type": "string"},
+        "process_arg": {"type": "string"}
+    },
+    "required": ["process_id", "process_arg"]
+}

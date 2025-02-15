@@ -1,6 +1,3 @@
-import json
-from typing import NamedTuple
-
 from vertexai.generative_models import (
     ChatSession,
     FunctionDeclaration,
@@ -9,49 +6,40 @@ from vertexai.generative_models import (
     ToolConfig,
 )
 
-from . import functions as F
-from .agent import GeminiAgent
-from .models import facilitator_conf, interpreter_conf, organizer_conf, txt2sql_conf
+from libs import functions as F
+from .agent import AgentResponse
+from .model_config.loader import load_config_as_gemini_agent
 
-JSON: type = dict[str, "JSON"] | list["JSON"] | str | int | float | bool | None
-
-
-class ResponseAction(NamedTuple):
-    action_type: str
-    keyword_arguments: dict[str, JSON]
+from libs.typing import StrategyScenario, JSON, EventScenario, ProcessCaller
 
 
-class ScenarioMakerResponse(NamedTuple):
-    message: str
-    strategy: JSON | None
-    actions: list[ResponseAction]
-
-
-class ScenarioMaker(GeminiAgent):
-    model: GenerativeModel
-    worker_models: dict[str, GenerativeModel]
+class StrategyMaker:
+    models: dict[str, GenerativeModel]
+    strategy: StrategyScenario
+    event: EventScenario
 
     chat_session: ChatSession | None
     last_message: str
 
-    def __init__(self, strategy: JSON):
+    def __init__(self):
         self.worker_models = dict(
-            txt2sql=GenerativeModel(**txt2sql_conf),
-            interpreter=GenerativeModel(**interpreter_conf),
-            facilitator=GenerativeModel(**facilitator_conf),
-            organizer=GenerativeModel(**organizer_conf),
+            insight=load_config_as_gemini_agent("libs.genai.model_config.insight"),
+            interpreter=load_config_as_gemini_agent(
+                "libs.genai.model_config.interpreter"
+            ),
+            facilitator=load_config_as_gemini_agent(
+                "libs.genai.model_config.facilitator"
+            ),
+            organizer=load_config_as_gemini_agent("libs.genai.model_config.organizer"),
         )
-        self.chat_session = None
-        self.last_message = "No previous message"
-        self.strategy = strategy
-
         self.callable_functions = [
             FunctionDeclaration.from_func(self.get_info),
             FunctionDeclaration.from_func(self.facilitate),
             FunctionDeclaration.from_func(self.register_strategy_scenario),
         ]
+        self.strategy={}
 
-    def get_process_id(self, prompt) -> tuple[str, JSON]:
+    def get_process_id(self, prompt) -> AgentResponse[ProcessCaller]:
         """
         promptから今行うべき処理のprocess_idを取得する関数
         """
@@ -70,9 +58,11 @@ class ScenarioMaker(GeminiAgent):
 
         func = response.candidates[0].function_calls[0].name
         arg = response.candidates[0].function_calls[0].args
-        return func, arg
+        return AgentResponse(
+            message=None, attachments=ProcessCaller(name=func, kwargs=arg)
+        )
 
-    def facilitate(self, prompt: str) -> ScenarioMakerResponse:
+    def facilitate(self, prompt: str) -> AgentResponse[StrategyScenario]:
         """
         任意のタイミングで実行ができる, 会議の司会進行を担う関数.
         ユーザーとの対話を元にMTGのファシリテーションを行う場合、基本的にはこれを選択する。
@@ -90,7 +80,7 @@ class ScenarioMaker(GeminiAgent):
 
         print("===FACILITATION===")
         response = self.chat_session.send_message(prompt, stream=False)
-        result = json.loads(response.text)
+        result = response.parsed
         self.last_message = "  \n".join(
             [
                 f"Agenda: **{result['current_topic']}**",
@@ -109,7 +99,7 @@ class ScenarioMaker(GeminiAgent):
         print("== modified scenario")
         print(result["strategy_scenario"])
         print("===DONE===")
-        return ScenarioMakerResponse(
+        return AgentResponse(
             message=self.last_message,
             strategy=self.strategy,
             actions=[],
@@ -137,7 +127,7 @@ class ScenarioMaker(GeminiAgent):
                     temp = temp[sf]
                 temp[attr] = cont
 
-    def register_strategy_scenario(self) -> ScenarioMakerResponse:
+    def register_strategy_scenario(self) -> AgentResponse[None]:
         """
         Agenda: [対策シナリオの登録] のタイミングで実行する.
         特に, データの読み込みを行う指示をユーザーから受けた場合に選択する
@@ -152,16 +142,16 @@ class ScenarioMaker(GeminiAgent):
             ScenarioMakerResponse.actions: 空の配列
         """
         print("===DATALOAD(DUMMY)===")
-        result = ScenarioMakerResponse(
+        result = AgentResponse(
             message="(Sample) データロードが完了しました。状況が変わった時に通知します。",
             strategy=self.strategy,
-            actions=[],
+            actions=None,
         )
         self.last_message = result.message
         print("===DONE===")
         return result
 
-    def get_info(self, prompt: str) -> ScenarioMakerResponse:
+    def get_info(self, prompt: str) -> AgentResponse[ProcessCaller]:
         """
         任意のタイミングで実行できる, データベース(BigQuery)へアクセスして情報を取得する関数
         ユーザーからデータに関する質問を受けた場合に積極的に選択する。
@@ -177,8 +167,8 @@ class ScenarioMaker(GeminiAgent):
             ScenarioMakerResponse.strategy: 最新の対策シナリオ
             ScenarioMakerResponse.actions: 得られたデータと, 描画の仕方の方法の提示
         """
-        print("===RUN TXT2BQ===")
-        query = self.run_worker_agent("txt2sql", prompt)
+        print("===RUN INSIGHT===")
+        query = self.run_worker_agent("insight", prompt)
         dataframe_json = F.run_bq_query(query["query"])
         info = self.run_worker_agent(
             "interpreter", f"dataframe: {dataframe_json}\nprompt: {prompt}"
@@ -190,11 +180,11 @@ class ScenarioMaker(GeminiAgent):
         self.last_message = info["interpretation"]
 
         print("===DONE===")
-        return ScenarioMakerResponse(
+        return AgentResponse(
             message=self.last_message,
             strategy=self.strategy,
             actions=[
-                ResponseAction(
+                ProcessCaller(
                     "plot",
                     dict(source=dataframe_json, plot_type=info["plot_type"], x=x, y=y),
                 )
@@ -203,7 +193,7 @@ class ScenarioMaker(GeminiAgent):
 
     def _generate_prompt(self, user_input: str) -> str:
         return f"""
-        現在のStrategyシナリオ: {json.dumps(self.strategy, indent=2)}
+        現在のStrategyシナリオ: {self.strategy.to_json()}
         1つ前のLLMの発言: {self.last_message}
         ユーザーの入力: {user_input}
         """
@@ -211,10 +201,10 @@ class ScenarioMaker(GeminiAgent):
     def send_message(
         self,
         prompt: str,
-    ) -> ScenarioMakerResponse:
+    ) -> AgentResponse[ProcessCaller | StrategyScenario | None]:
         prompt = f"""
         現在のStrategyシナリオ:,
-        {json.dumps(self.strategy)},
+        {self.strategy.to_json()},
         1つ前のLLMの発言:,
         {self.last_message},
         ユーザーの入力:,

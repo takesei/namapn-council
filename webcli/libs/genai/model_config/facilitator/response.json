@@ -1,0 +1,47 @@
+{
+    "type": "object",
+    "properties": {
+        "msg": {
+            "type": "string",
+            "description": "LLMからUserへのメッセージをマークダウン形式で記載する"
+        },
+        "strategy_scenario": {
+            "title": "イベント対応対策シナリオ",
+            "description": "Agendaが[対策シナリオの作成]でかつ, 対策シナリオの変数が確定した場合に記載する. 対策シナリオの変更点に関する情報を記述する",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "対策シナリオスキームの変数名",
+                        "description": "対策シナリオで変更する変数の名を記載する"
+                    },
+                    "content": {
+                        "type": "string",
+                        "title": "対策シナリオスキームの変数の値",
+                        "description": "対策シナリオで変更する変数の値を記載する, 必ず対策シナリオスキーマの型に沿って設定をすること"
+                    }
+                },
+                "required": [
+                    "name",
+                    "content"
+                ]
+            }
+        },
+        "current_topic": {
+            "type": "string",
+            "description": "現在のAgendaの順序を記載する"
+        },
+        "current_step": {
+            "type": "string",
+            "description": "Agendaが[対策シナリオの作成]の場合は, ここに現在のステップを記載する"
+        }
+    },
+    "required": [
+        "msg",
+        "strategy_scenario",
+        "current_topic",
+        "current_step"
+    ]
+}
