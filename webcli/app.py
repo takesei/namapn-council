@@ -33,7 +33,7 @@ if st.session_state.agent["event"] is not None:
         with st.container(border=True):
             st.error("**緊急対応**", icon="⚠️")
             st.page_link(
-                "./modules/top/contingency_plan.py",
+                "./modules/top/contingency_plan/main.py",
                 label="台風上陸による調達計画影響",
             )
 
