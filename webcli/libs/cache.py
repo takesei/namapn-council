@@ -7,6 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from libs.genai import StrategyMaker
 from libs.store import DataCatalog
+from libs.datahub import DataHub
 
 
 @st.cache_data(show_spinner=True, persist=False)
@@ -58,6 +59,12 @@ def set_template(path: str):
     print("Load Templates")
     env = Environment(loader=FileSystemLoader(path), trim_blocks=True)
     return env
+
+
+@st.cache_resource
+def get_datahub(_db: DataCatalog):
+    print("Create DataHub")
+    return DataHub(_db)
 
 
 @st.cache_resource
