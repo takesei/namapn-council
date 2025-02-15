@@ -10,12 +10,7 @@ def start_session():
     c1, c2 = st.columns(2)
     with c1:
         if st.button("はい"):
-            forecasts = dict(
-                sales_forecast=st.session_state.db.get("sales_forecasts"),
-                resource_forecast=st.session_state.db.get("resource_forecasts"),
-                routing_forecast=st.session_state.db.get("routing_forecasts"),
-            )
-            st.session_state.forecasts = provision_data(forecasts)
+            provision_data()
     with c2:
         if st.button("いいえ"):
             st.info("待機します, ×ボタンから抜けてください")
@@ -46,6 +41,5 @@ with left:
         jinja_env = st.session_state.jinja
         strategy_scenario = st.session_state.agent["model"].strategy
         event_scenario = st.session_state.agent["event"]
-        # forecasts = st.session_state.forecasts
-        forecasts = {}
-        render_report(jinja_env, strategy_scenario, event_scenario, forecasts)
+        datahub = st.session_state.datahub
+        render_report(jinja_env, event_scenario, strategy_scenario, datahub)

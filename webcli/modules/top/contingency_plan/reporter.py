@@ -3,31 +3,28 @@ from jinja2 import Environment, Template
 import pandas as pd
 import streamlit as st
 
-from libs.typing import JSON, EventScenario, StrategyScenario, Forecasts
+from libs.typing import JSON, EventScenario, StrategyScenario
+from libs.datahub import DataHub
 
 
-def render_event_influence(event_scenario: EventScenario):
+def render_event_influence(event_scenario: EventScenario, forecasts):
     case_comparison_container = st.container()
     forecast_container = st.container()
 
     with case_comparison_container:
-        df_cases = (
-            pd.DataFrame(event_scenario.event_cases, columns=event_scenario.event_cases)
-            .set_index("version")
-            .T
-        )
+        df_cases = pd.DataFrame(event_scenario.event_cases).set_index("version").T
         st.markdown("##### 比較")
         st.table(df_cases)
 
     with forecast_container:
-        render_forecasts_container()
+        render_forecasts_container(df_cases, forecasts)
 
 
 def render_report(
     jinja_env: Environment,
     event_scenario: EventScenario,
     strategy_scenario: StrategyScenario,
-    forecasts: Forecasts,
+    datahub: DataHub,
 ):
     report_seelctor_container = st.container(height=95)
     report_container = st.container(height=650)
@@ -38,13 +35,13 @@ def render_report(
     with report_container:
         match report:
             case "イベント情報":
-                render_event_influence(event_scenario)
+                template = jinja_env.get_template("event.md")
+                render_template(template, event_scenario.to_dict())
+            case "影響予測　　":
+                render_event_influence(event_scenario, datahub)
             case "対策情報　　":
                 template = jinja_env.get_template("strategy.md")
-                render_template(template, strategy_scenario)
-            case "影響予測　　":
-                template = jinja_env.get_template("event.md")
-                render_template(template, event_scenario)
+                render_template(template, strategy_scenario.to_dict())
 
 
 def render_report_selector():
@@ -63,11 +60,10 @@ def render_template(template: Template, content: JSON):
     st.markdown(rdr)
 
 
-def render_forecasts_container(df_cases: pd.DataFrame, forecasts: Forecasts):
-    name = st.selectbox("表示するForecastを選んでください", forecasts.contents())
-    segments = forecasts[name].segments
-    values = forecasts[name].values
-    df_diff = forecasts[name].diff
+def render_forecasts_container(df_cases: pd.DataFrame, datahub: DataHub):
+    name = st.selectbox("表示するForecastを選んでください", datahub.contents())
+    segments = datahub[name].segments
+    values = datahub[name].values
     df_summary = None
 
     c1, c2 = st.columns([3, 1])
@@ -75,10 +71,12 @@ def render_forecasts_container(df_cases: pd.DataFrame, forecasts: Forecasts):
 
     with c1:
         c = st.pills("セグメント分析", segments)
+        if c is None:
+            c = []
     with c2:
         viz_table = st.toggle("表形式", value=False)
     with c3:
-        all_cases = ["original", *df_cases.columns]
+        all_cases = ["V001", *df_cases.columns]
         viz_version = st.pills("比較するversion", all_cases, selection_mode="multi")
         if len(viz_version) == 0:
             viz_version = all_cases
@@ -87,29 +85,21 @@ def render_forecasts_container(df_cases: pd.DataFrame, forecasts: Forecasts):
         if target is None:
             target = values[0]
 
-    if c is None:
-        df_summary = df_diff.groupby("time_id").sum().reset_index()
-        df_summary["surrogate"] = "ALL"
-    else:
-        df_summary = df_diff.groupby(["time_id", c]).sum().reset_index()
-        df_summary["surrogate"] = df_summary.loc[:, c]
-    df_summary = df_summary.drop(columns=[c for c in segments])
-
-    if viz_table:
-        df_summary
-    else:
-        df = []
-        for a in df_summary.filter(like=f"{target}_").columns:
-            temp = df_summary.loc[:, ["time_id", "surrogate", a]].rename(
-                columns={a: target}
-            )
-            temp.surrogate = f"{a}_" + temp.surrogate
-            df.append(temp)
-        sample = pd.concat(df)
-        sample = sample[sample.surrogate.str.contains(viz_version)]
-        st.line_chart(
-            sample,
-            x="time_id",
-            y=target,
-            color="surrogate",
+    try:
+        df_diff = datahub[name].diff(
+            target_versions=viz_version, segments=c, values=target
         )
+        df_summary = df_diff.drop(columns=c)
+
+        if viz_table:
+            st.dataframe(df_summary)
+        else:
+            st.line_chart(
+                df_summary,
+                x="time_id",
+                y=df_summary.filter(like=f"{target}").columns,
+                color="label",
+            )
+    except Exception as e:
+        st.error(f"Table {name} doesn't support version comparison")
+        print(e)
