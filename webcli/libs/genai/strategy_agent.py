@@ -8,7 +8,7 @@ from vertexai.generative_models import (
 
 import json
 from libs import functions as F
-from .agent import AgentResponse
+from .agent import AgentResponse, MultiAgent
 from .model_config.loader import load_config_as_gemini_agent
 
 from libs.typing import StrategyScenario, JSON, EventScenario, ProcessCaller
@@ -23,7 +23,7 @@ class StrategyMaker:
     last_message: str
 
     def __init__(self):
-        self.worker_models = dict(
+        self.models = dict(
             insight=load_config_as_gemini_agent("libs.genai.model_config.insight"),
             interpreter=load_config_as_gemini_agent(
                 "libs.genai.model_config.interpreter"
@@ -48,7 +48,7 @@ class StrategyMaker:
         """
         print("Debug: process特定LLMが特定開始")
         tool = Tool(function_declarations=self.callable_functions)
-        response = self.worker_models["organizer"].generate_content(
+        response = self.models["organizer"].generate_content(
             prompt,
             tools=[tool],
             tool_config=ToolConfig(
@@ -79,7 +79,7 @@ class StrategyMaker:
             ScenarioMakerResponse.actions: 空の配列
         """
         if self.chat_session is None:
-            self.chat_session = self.worker_models["facilitator"].start_chat()
+            self.chat_session = self.models["facilitator"].start_chat()
 
         print("===FACILITATION===")
         response = self.chat_session.send_message(prompt, stream=False)
@@ -152,6 +152,12 @@ class StrategyMaker:
         print("===DONE===")
         return result
 
+    def send_worker_message[U](self, model_name: str, prompt: str) -> AgentResponse[U]:
+        if model_name not in self.models:
+            raise ValueError(f"Model {model_name} not found")
+        agent = self.models[model_name]
+        return agent.generate_content(prompt)
+
     def get_info(self, prompt: str) -> AgentResponse[ProcessCaller]:
         """
         任意のタイミングで実行できる, データベース(BigQuery)へアクセスして情報を取得する関数
@@ -169,10 +175,10 @@ class StrategyMaker:
             ScenarioMakerResponse.actions: 得られたデータと, 描画の仕方の方法の提示
         """
         print("===RUN INSIGHT===")
-        query = self.run_worker_agent("insight", prompt)
+        query = self.send_worker_message("insight", prompt)
         print("thinking: " + query["thinking"])
         dataframe_json = F.run_bq_query(query["query"])
-        info = self.run_worker_agent(
+        info = self.send_worker_message(
             "interpreter", f"dataframe: {dataframe_json}\nprompt: {prompt}"
         )
 
@@ -209,17 +215,20 @@ class StrategyMaker:
         ユーザーの入力:,
         {prompt},
         """
-        process_id, process_arg = self.get_process_id(prompt)
+        _, attachments = self.get_process_id(prompt)
 
-        if process_id == "get_info":
+        name = attachments.name
+        kwargs = attachments.kwargs
+
+        if name == "get_info":
             prompt = f"""
             {prompt},
             調べるべき内容:,
-            {process_arg},
+            {kwargs},
             """
             resp = self.get_info(prompt)
 
-        elif process_id == "register_strategy_scenario":
+        elif name == "register_strategy_scenario":
             resp = self.register_strategy_scenario()
         else:
             resp = self.facilitate(prompt)

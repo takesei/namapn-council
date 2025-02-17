@@ -75,4 +75,5 @@ def render_prompt_area(chat_history_container: "st.container", chat_history) -> 
                         message=f"error: {e}",
                         attachments=[],
                     )
+                    raise e
             chat_history.append(cont)
