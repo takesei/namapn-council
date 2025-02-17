@@ -35,8 +35,8 @@ class StrategyMaker:
         )
         self.callable_functions = [
             FunctionDeclaration.from_func(self.get_info),
-            FunctionDeclaration.from_func(self.facilitate),
-            FunctionDeclaration.from_func(self.register_strategy_scenario),
+            # FunctionDeclaration.from_func(self.facilitate),
+            # FunctionDeclaration.from_func(self.register_strategy_scenario),
         ]
         self.strategy = StrategyScenario()
         self.last_message = "No previous message"
@@ -170,6 +170,7 @@ class StrategyMaker:
         """
         print("===RUN INSIGHT===")
         query = self.run_worker_agent("insight", prompt)
+        print("thinking: " + query["thinking"])
         dataframe_json = F.run_bq_query(query["query"])
         info = self.run_worker_agent(
             "interpreter", f"dataframe: {dataframe_json}\nprompt: {prompt}"
