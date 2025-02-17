@@ -27,14 +27,15 @@ if "jinja" not in st.session_state:
 # Create DB connection
 if "db" not in st.session_state:
     st.session_state.db = C.get_data_catalog("./dwh.duckdb")
-    st.session_state.agent["event"] = EventScenario.from_dict(
-        st.session_state.db.get("event_scenario")
-    )
+
+if "event" not in st.session_state:
+    st.session_state.event = C.fetch_event(st.session_state.db)
 
 if "datahub" not in st.session_state:
     st.session_state.datahub = C.get_datahub(st.session_state.db)
 
-if st.session_state.agent["event"] is not None:
+# SideBar UI
+if st.session_state.event is not None:
     with st.sidebar:
         with st.container(border=True):
             st.error("**緊急対応**", icon="⚠️")

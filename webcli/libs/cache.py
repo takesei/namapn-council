@@ -5,9 +5,10 @@ import tomllib
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+from libs.datahub import DataHub
 from libs.genai import StrategyMaker
 from libs.store import DataCatalog
-from libs.datahub import DataHub
+from libs.typing import EventScenario
 
 
 @st.cache_data(show_spinner=True, persist=False)
@@ -25,33 +26,23 @@ def load_navigation():
 @st.cache_resource
 def setup_aiagent():
     print("Create Gemiin Agent")
-    empty_scenario = {
-        "strategy_name": "",
-        "strategy_id": "",
-        "create_date": "",
-        "version": "",
-        "department": "",
-        "responsible_person": "",
-        "event": {"impact_level": "", "version": "", "name": "", "url": ""},
-        "activation": {
-            "responsible": "",
-            "time": "",
-            "conditions": "",
-            "metrics": [],
-            "notifications": [],
-        },
-        "initial_response": [],
-        "containment_measures": [],
-        "monitoring": [],
-        "recovery": [],
-    }
 
     return dict(
         model=StrategyMaker(),
         chat_history=[],
-        event=None,
         status="deactive",
     )
+
+
+@st.cache_resource
+def fetch_event(_db: DataCatalog):
+    print("Check events")
+    event = st.session_state.db.get("event_scenario")
+
+    if event is not None:
+        return EventScenario.from_dict(st.session_state.db.get("event_scenario"))
+    else:
+        return None
 
 
 @st.cache_resource

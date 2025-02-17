@@ -24,9 +24,16 @@ class DataContent:
     def diff(
         self,
         target_versions: str | list[str],
-        segments: str | list[str],
-        values: str | list[str],
+        segments: str | list[str] | None = None,
+        values: str | list[str] | None = None,
     ) -> pd.DataFrame:
+        if segments is None:
+            segments = []
+        if values is None:
+            values = self.values
+
+
+
         if self.versions is None:
             raise ValueError(
                 f"Table {self.name} does not support diff method, since it does not have version attr."
@@ -99,6 +106,9 @@ class DataHub:
 
     def __getitem__(self, key: str):
         return self._contents[key]
+
+    def items(self):
+        return self._contents.items()
 
     def __init__(self, db: DataCatalog) -> None:
         cont = {}

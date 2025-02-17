@@ -6,9 +6,7 @@ from vertexai.generative_models import (
     ToolConfig,
 )
 
-import uuid
 import json
-import datetime
 from libs import functions as F
 from .agent import AgentResponse
 from .model_config.loader import load_config_as_gemini_agent
@@ -40,14 +38,7 @@ class StrategyMaker:
             FunctionDeclaration.from_func(self.facilitate),
             FunctionDeclaration.from_func(self.register_strategy_scenario),
         ]
-        self.strategy = StrategyScenario(
-            name="",
-            id=str(uuid.uuid4()),
-            issue_date=datetime.datetime.now(),
-            version="0.0",
-            department="YourDepartment",
-            responsible_person="You",
-        )
+        self.strategy = StrategyScenario()
         self.last_message = "No previous message"
         self.chat_session = None
 
