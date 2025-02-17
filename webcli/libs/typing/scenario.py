@@ -1,6 +1,7 @@
 from dataclasses import dataclass, fields, is_dataclass, asdict
 from typing import Any, Self
 from datetime import datetime
+import uuid
 
 JSON: type = dict[str, "JSON"] | list["JSON"] | str | int | float | bool | None
 
@@ -56,9 +57,9 @@ class BaseModel:
 
 @dataclass
 class BaseDocument(BaseModel):
-    name: str
-    id: str
-    issue_date: str
-    version: str
-    department: str
-    responsible_person: str
+    name: str = ""
+    id: str = str(uuid.uuid4())
+    issue_date: str = datetime.now()
+    version: str = "0.0"
+    department: str = ""
+    responsible_person: str = ""

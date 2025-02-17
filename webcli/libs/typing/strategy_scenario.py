@@ -32,3 +32,4 @@ class StrategyScenario(BaseDocument):
     containment_measures: list[Action] = field(default_factory=list)
     monitoring: list[Action] = field(default_factory=list)
     recovery: list[Action] = field(default_factory=list)
+

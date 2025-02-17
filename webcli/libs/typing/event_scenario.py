@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
 from libs.typing.scenario import BaseModel, BaseDocument
@@ -50,11 +50,11 @@ class Reference(BaseModel):
 
 @dataclass
 class EventScenario(BaseDocument):
-    impact_level: str
-    overview: str
-    impact_duration: ImpactDuration
-    event_metrics: EventMetric
-    event_cases: list[EventCase]
-    timeline: list[Timeline]
-    evidences: list[Evidence]
-    references: list[Reference]
+    impact_level: str = ""
+    overview: str = ""
+    impact_duration: ImpactDuration | None = None
+    event_metrics: EventMetric | None = None
+    event_cases: list[EventCase] = field(default_factory=list)
+    timeline: list[Timeline] = field(default_factory=list)
+    evidences: list[Evidence] = field(default_factory=list)
+    references: list[Reference] = field(default_factory=list)
