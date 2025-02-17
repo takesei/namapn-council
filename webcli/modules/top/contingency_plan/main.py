@@ -31,11 +31,6 @@ def start_session():
 
 left, right = st.columns([0.6, 0.4], vertical_alignment="top")
 
-with right:
-    with st.container(border=True, height=800):
-        chat_history = st.session_state.agent["chat_history"]
-        render_agent_interface(chat_history)
-
 with left:
     with st.container(border=True, height=800):
         jinja_env = st.session_state.jinja
@@ -43,3 +38,8 @@ with left:
         event_scenario = st.session_state.event
         datahub = st.session_state.datahub
         render_report(jinja_env, event_scenario, strategy_scenario, datahub)
+
+with right:
+    with st.container(border=True, height=800):
+        chat_history = st.session_state.agent["chat_history"]
+        render_agent_interface(chat_history)

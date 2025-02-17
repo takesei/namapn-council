@@ -1,4 +1,5 @@
 from typing import Any, NamedTuple
+import traceback
 
 import streamlit as st
 
@@ -70,10 +71,10 @@ def render_prompt_area(chat_history_container: "st.container", chat_history) -> 
                     )
                 except Exception as e:
                     st.error(e)
+                    st.error(traceback.format_exc())
                     cont = Message(
                         actor="assistant",
                         message=f"error: {e}",
                         attachments=[],
                     )
-                    raise e
             chat_history.append(cont)

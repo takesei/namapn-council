@@ -6,7 +6,7 @@ import yaml
 from jinja2 import Environment, FileSystemLoader
 
 from libs.datahub import DataHub
-from libs.genai import StrategyMaker
+from libs.genai import StrategyAgent
 from libs.store import DataCatalog
 from libs.typing import EventScenario
 
@@ -28,7 +28,7 @@ def setup_aiagent():
     print("Create Gemiin Agent")
 
     return dict(
-        model=StrategyMaker(),
+        model=StrategyAgent(),
         chat_history=[],
         status="deactive",
     )

@@ -13,8 +13,7 @@ class Agent[T](Protocol):
 class MultiAgent[T]:
     models: dict[str, Agent[Any]]
 
-    def send_worker_message[U](self, model_name: str, prompt: str) -> AgentResponse[U]:
-        if model_name not in self.models:
-            raise ValueError(f"Model {model_name} not found")
-        agent = self.models[model_name]
-        return agent.send_message(prompt)
+    def send_worker_message[U](
+        self, model_name: str, prompt: str
+    ) -> AgentResponse[U]: ...
+
