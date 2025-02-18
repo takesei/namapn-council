@@ -1,0 +1,17 @@
+model_name: gemini-2.0-flash-exp
+system_instruction:
+  src: system_instruction.md
+  attachments:
+    - label: イベントシナリオスキーマ
+      src: schema_event.json
+    - label: 対策シナリオスキーマ
+      src: schema_strategy.json
+    - label: ステップ
+      src: workflow.json
+    - label: 変数の設定方法
+      src: variables.json
+response:
+  schema_src: response.json
+  mime_type: application/json
+  modalities: [TEXT]
+prompt_prefix: "Data"

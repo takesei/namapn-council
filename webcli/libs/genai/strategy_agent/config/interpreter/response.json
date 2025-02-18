@@ -1,0 +1,10 @@
+{
+            "type": "object",
+            "properties": {
+                "interpretation": {"type": "string"},
+                "plot_type": {"type": "string"},
+                "x": {"type": "string"},
+                "y": {"type": "string"}
+            },
+            "required": ["interpretation", "plot_type"]
+}

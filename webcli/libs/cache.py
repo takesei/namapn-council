@@ -1,11 +1,14 @@
+from importlib import resources
+
 import streamlit as st
 import tomllib
-from jinja2 import Environment, FileSystemLoader
 import yaml
+from jinja2 import Environment, FileSystemLoader
 
-from genai import ScenarioMaker
-
+from libs.datahub import DataHub
+from libs.genai import StrategyAgent
 from libs.store import DataCatalog
+from libs.typing import EventScenario
 
 
 @st.cache_data(show_spinner=True, persist=False)
@@ -23,33 +26,23 @@ def load_navigation():
 @st.cache_resource
 def setup_aiagent():
     print("Create Gemiin Agent")
-    empty_scenario = {
-        "strategy_name": "",
-        "strategy_id": "",
-        "create_date": "",
-        "version": "",
-        "department": "",
-        "responsible_person": "",
-        "event": {"impact_level": "", "version": "", "name": "", "url": ""},
-        "activation": {
-            "responsible": "",
-            "time": "",
-            "conditions": "",
-            "metrics": [],
-            "notifications": [],
-        },
-        "initial_response": [],
-        "containment_measures": [],
-        "monitoring": [],
-        "recovery": [],
-    }
 
     return dict(
-        model=ScenarioMaker(empty_scenario),
+        model=StrategyAgent(),
         chat_history=[],
-        event=None,
         status="deactive",
     )
+
+
+@st.cache_resource
+def fetch_event(_db: DataCatalog):
+    print("Check events")
+    event = st.session_state.db.get("event_scenario")
+
+    if event is not None:
+        return EventScenario.from_dict(st.session_state.db.get("event_scenario"))
+    else:
+        return None
 
 
 @st.cache_resource
@@ -60,9 +53,16 @@ def set_template(path: str):
 
 
 @st.cache_resource
+def get_datahub(_db: DataCatalog):
+    print("Create DataHub")
+    return DataHub(_db)
+
+
+@st.cache_resource
 def get_data_catalog(db: str):
     print("Create DB Session")
-    with open("libs/tables/schema.yml", "r") as f:
+    file_path = resources.files("libs.tables").joinpath("schema.yml")
+    with file_path.open("r", encoding="utf-8") as f:
         schema = yaml.safe_load(f)["mart"]
     catalog = DataCatalog(db, schema)
 

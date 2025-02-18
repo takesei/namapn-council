@@ -1,0 +1,23 @@
+# forecasts
+- name: resource_forecasts
+  keys: [version, time_id]
+  segments: [customer_code, item_code]
+  values: [quantity]
+- name: routing_forecasts
+  keys: [version, time_id]
+  segments: [from_plants_code, to_plants_code, item_code]
+  values: [quantity, cost, unit_cost]
+- name: sales_forecasts
+  keys: [version, time_id]
+  segments: [company_code, customer_code, item_code]
+  values: [quantity]
+- name: production_forecasts
+  keys: [version, time_id]
+  segments: [line_code, item_code]
+  values: [quantity]
+
+  # transactions
+- name: transactions
+  keys: [time_id]
+  segments: [company_code, customer_code, item_code, transaction_type, storage_code]
+  values: [price, quantity, version]

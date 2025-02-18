@@ -1,0 +1,121 @@
+{
+  "title": "イベントシナリオ",
+  "description": "企業が特定のイベントに対応するために策定するシナリオのデータ構造",
+  "type": "object",
+  "properties": {
+    "event_name": {
+      "type": "string",
+      "title": "イベント名",
+      "description": "発生するイベントの名称。ポジティブなイベントもネガティブイベントも含む",
+      "examples": ["台風15号直撃の可能性", "大規模地震発生", "サイバー攻撃の兆候", "新商品発売の成功", "SNSでのトレンド入り", "売上記録更新"]
+    },
+    "event_id": {
+      "type": "string",
+      "title": "イベントID",
+      "description": "一意の識別子を指定する（例: YYYYMMDD_Category_EventType）",
+      "examples": ["20250914_Typhoon", "20250915_Earthquake", "20250916_CyberAttack", "20250914_ProductLaunch", "20250915_BuzzEvent"]
+    },
+    "issue_date": {
+      "type": "string",
+      "format": "date-time",
+      "title": "発行日",
+      "description": "イベント情報が発行された日時。ISO 8601形式で記載する",
+      "examples": ["2025-09-13T12:00:00Z"]
+    },
+    "version": {
+      "type": "string",
+      "title": "バージョン",
+      "description": "イベント情報が更新された際、または影響範囲が変化した場合にバージョンを更新する",
+      "examples": ["V1.2", "V1.3", "V1.1"]
+    },
+    "department": {
+      "type": "string",
+      "title": "担当部署",
+      "description": "イベントに関連する主要な管理部門を指定",
+      "examples": ["マーケティング部", "営業部"]
+    },
+    "responsible_person": {
+      "type": "string",
+      "title": "責任者",
+      "description": "イベント対応の責任者",
+      "examples": ["田中一郎", "佐藤三郎", "高橋美咲", "山田太郎", "鈴木花子"]
+    },
+    "impact_level": {
+      "type": "string",
+      "enum": ["軽微", "中程度", "重大"],
+      "title": "影響度",
+      "description": "イベントの影響度（業務、売上、ブランド価値などへの影響）",
+      "examples": ["軽微", "中程度", "重大"]
+    },
+    "overview": {
+      "type": "string",
+      "title": "概要",
+      "description": "イベントの発生状況と影響の概要（物流・販売・ブランド価値への影響など）",
+      "examples": ["台風が関西圏または九州圏に直撃し、物流・調達および販売に影響を及ぼす可能性がある", "SNSバズにより急激に注文が増加", "新商品が市場で話題になり売上が増加"]
+    },
+    "impact_duration": {
+      "type": "object",
+      "title": "イベントの影響期間",
+      "description": "イベントの影響が継続する期間",
+      "properties": {
+        "start": {
+          "type": "string",
+          "format": "date-time",
+          "title": "開始時刻",
+          "examples": ["2025-09-14T12:00:00Z"]
+        },
+        "end": {
+          "type": "string",
+          "format": "date-time",
+          "title": "終了時刻",
+          "examples": ["2025-09-16T23:59:00Z"]
+        }
+      }
+    },
+    "event_metrics": {
+      "type": "object",
+      "title": "イベントの詳細",
+      "description": "イベントが発展した場合の, 複数の可能性をケースとして定義する",
+      "properties": {
+        "version": {
+          "type": "string",
+          "title": "ケースバージョン",
+          "description": "ケースごとのForecast情報を指すデータバージョン. イベントのバージョンとは別なことに注意",
+          "examples": ["V003", "V004"]
+        },
+        "name": {
+          "type": "string",
+          "title": "バージョンの名称",
+          "description": "バージョンのIDが表す先のイベントケースを簡潔に表したイベントの名前",
+          "examples": ["関西直撃ケース", "商品Aのメガヒットケース"]
+        },
+        "probability": {
+          "type": "string",
+          "title": "発生する確率",
+          "description": "そのイベントケースが発生する確率（％）",
+          "examples": ["75%", "20%", "50%"]
+        },
+        "overview": {
+          "type": "string",
+          "title": "影響の概要",
+          "description": "イベントが業務や市場に及ぼす影響の概要",
+          "examples": ["物流遅延による供給不足", "SNSでの急激な注文増加"]
+        },
+        "process": {
+          "type": "string",
+          "title": "影響を受けるプロセス",
+          "description": "イベントが影響を及ぼす業務プロセス",
+          "examples": ["調達部門の原材料確保", "販売部門のリテール配送"]
+        },
+        "risk": {
+          "type": "string",
+          "title": "KPIへの影響",
+          "description": "主要な業績指標（KPI）に対する影響",
+          "examples": ["売上減少 1.2億円", "主要取引先5社に影響", "ブランド価値向上"]
+        }
+      },
+      "required": ["name", "probability", "overview", "process", "risk"]
+    }
+  },
+  "required": ["event_name", "event_id", "issue_date", "version", "department", "responsible_person", "impact_level", "overview", "impact_duration", "event_metrics"]
+}

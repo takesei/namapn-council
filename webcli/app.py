@@ -2,6 +2,7 @@ import streamlit as st
 import vertexai
 
 from libs import cache as C
+from libs.typing import EventScenario
 
 # Setup Streamlit Pages
 st.set_page_config(
@@ -26,14 +27,20 @@ if "jinja" not in st.session_state:
 # Create DB connection
 if "db" not in st.session_state:
     st.session_state.db = C.get_data_catalog("./dwh.duckdb")
-    st.session_state.agent["event"] = st.session_state.db.get("event_scenario")
 
-if st.session_state.agent["event"] is not None:
+if "event" not in st.session_state:
+    st.session_state.event = C.fetch_event(st.session_state.db)
+
+if "datahub" not in st.session_state:
+    st.session_state.datahub = C.get_datahub(st.session_state.db)
+
+# SideBar UI
+if st.session_state.event is not None:
     with st.sidebar:
         with st.container(border=True):
             st.error("**緊急対応**", icon="⚠️")
             st.page_link(
-                "./modules/top/contingency_plan.py",
+                "./modules/top/contingency_plan/main.py",
                 label="台風上陸による調達計画影響",
             )
 

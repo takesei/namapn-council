@@ -1,0 +1,11 @@
+model_name: gemini-1.5-flash
+system_instruction:
+  src: system_instruction.md
+  attachments:
+    - label: BQテーブル
+      src: bq_schema.md
+response:
+  schema_src: response.json
+  mime_type: application/json
+  modalities: [TEXT]
+prompt_prefix: "Data"

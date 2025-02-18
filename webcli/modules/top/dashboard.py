@@ -5,7 +5,7 @@ import pandas as pd
 # Monitor room
 """
 
-if st.session_state.agent["event"] is not None:
+if st.session_state.event is not None:
     st.toast("[**緊急**] 緊急計画pageを確認ください", icon="⚠️")
 
 with st.spinner():

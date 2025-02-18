@@ -1,0 +1,19 @@
+{
+    "type": "object",
+    "description": "A couple of BigQuery query and explanation of failing reason.",
+    "properties": {
+        "thinking": {
+            "type": "STRING",
+            "description": "Any reasoning or short chain-of-thought before generating the query."
+        },
+        "query": {
+            "type": "STRING",
+            "description": "A generated BigQuery query will be described here when the context is sufficient."
+        },
+        "explanation": {
+            "type": "STRING",
+            "description": "An explanation of failing to generate the query."
+        }
+    },
+    "required": ["query"]
+}

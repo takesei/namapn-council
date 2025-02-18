@@ -1,5 +1,5 @@
-# {{ event_name }} 概要
-- **id:** `{{ event_id }}`
+# {{ name }} 概要
+- **id:** `{{ id }}`
 - **発行日:** {{ issue_date }} (version {{ version }})
 - **担当部門:** `{{ department }}` (責任者: `{{ responsible_person }}` )
 - **影響度:** `{{ impact_level }}`

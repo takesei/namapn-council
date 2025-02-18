@@ -2,11 +2,12 @@ version = "0.0.5"
 project = "velvety-outcome-448307-f0"
 port = 8080
 
-.PHONY: dev-server lint
+.PHONY: dev-server qa
 
-lint:
+qa:
 	@uvx ruff check --fix
 	@uvx ruff format
+	@uv run mypy
 
 run-dev-server:
 	@uv run streamlit run app.py

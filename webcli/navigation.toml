@@ -48,7 +48,7 @@ icon = ":material/edit:"
 url_path = "supply-plan"
 
 [[EventSupport]]
-page = "modules/top/contingency_plan.py"
+page = "modules/top/contingency_plan/main.py"
 title = "緊急計画"
 icon = ":material/dashboard:"
 url_path = "contingency-plan"
